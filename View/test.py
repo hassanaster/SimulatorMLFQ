@@ -1,152 +1,158 @@
 #----------------------------------------------------------------------------------
-# Basic Data Window: After get how many jobs and periods is needed other basic information for each quantum
-# This window take the basic data: priority of each quantum, quantum time, and period time
+# Aditional Data Window: After get basic date from user, user is avalaible to add aditional data for the simulation
+# This window take the additional data: arrival time, run time, I/O Time, How often start I/O process*
 #----------------------------------------------------------------------------------
 
 #----------------------------------------------------------------------------------
 # @Authors: Miriam Arango, Luisa Arboleda, Yeison Quinto
 # @Version: Version 1.0
-# @Date: 02 - 01 - 2021
+# @Date: 03 - 01 - 2021
 #----------------------------------------------------------------------------------
 
 import tkinter as tk
 import tkinter.messagebox as mb
-import tkinter.ttk as cb
-
-#Window or root: First we should create the root or window
-basicDataWindow=tk.Tk()
-basicDataWindow.title("MLFQ Simulation - Basic Data Window")
-basicDataWindow.resizable(False,False)
-basicDataWindow.iconbitmap("/icon.ico")
-
-#Frame, container or first widget: After this we create the frame where we are going to put the widgets needed for this window
-frameBasicDataWindow=tk.Frame()
-frameBasicDataWindow.pack()
-frameBasicDataWindow.config(width="800", height="800")
-frameBasicDataWindow['bg']='#EAF6F5'
+import View.shareGraphicFunctions as sgf
 
 #----------------------------------------------------------------------------------
 # Variables
 #----------------------------------------------------------------------------------
-
-#variables from fields I need to recover
-quantumTime=tk.StringVar()
-periodTime=tk.StringVar()
-"""priorityJobA=tk.StringVar()
-priorityJobB=tk.StringVar()
-priorityJobC=tk.StringVar()
-aditionalWindow=tk.StringVar()"""
-
+#basicDataWindow=tk.Toplevel()
 
 #Global variables
-quantum=""
-period=""
-priorityA=""
-priorityB=""
-priorityC=""
-aditionalW=""
+jobA=[0,0,0,0]
+jobB=[0,0,0,0]
+jobC=[0,0,0,0]
 
 #----------------------------------------------------------------------------------
 # Functions to create the events for each button
 #----------------------------------------------------------------------------------
 
 #Event for OK button on click
-def eventOkBWButton():
-    global quantum
-    global period
-    quantum=quantumTime.get()
-    period=periodTime.get()
-    priorityA=jobAComboBox.current()
-    priorityB=jobBComboBox.current()
-    priorityC=jobCComboBox.current()
-    aditionalW=jobTwoOptionsComboBox.current()
-    if (quantum==""):
-        quantum="0"
-    if (period==""):
-        period="0"
-    if((int(quantum)==0) and (int(period)==0)):
-        period=""
-        quantum=""
-        mb.showerror(title="Error", message="Data typed for quantum and period field are invalid, please verify.")
-        #call the windows aditionalDataWindows.py
+def validateField (data, array, position):
+    if data=="":
+        array[position]=0
     else:
-        print("Priority Job A:", priorityA)
-        print("Priority Job B:", priorityB)
-        print("Priority Job C:", priorityC)
-        print("Quantum:", quantum)
-        print("Period Time:", period)
-        print("Aditional data:", aditionalW)
+        array[position]=int(data)
+
+def eventstartButton(jobQuantity, arrivalJobAField, arrivalJobBField, arrivalJobCField, runTimeJobAField, runTimeJobBField, runTimeJobCField, ioJobCField, ioJobBField, ioJobAField, startIoJobCField, startIoJobBField, startIoJobAField):
+    global JobA
+    global JobB
+    global JobC
+    if jobQuantity=="1":
+        jobA[0]=validateField(arrivalJobAField.get(), jobA, 0)
+        jobA[1]=validateField(runTimeJobAField.get(), jobA, 1)
+        jobA[2]=validateField(ioJobAField.get(), jobA, 2)
+        jobA[3]=validateField(startIoJobAField.get(), jobA, 3)
+    if jobQuantity=="2" :
+        jobB[0]=validateField(arrivalJobBField.get(), jobB, 0)
+        jobB[1]=validateField(runTimeJobBField.get(), jobB, 1)
+        jobB[2]=validateField(ioJobBField.get(), jobB, 2)
+        jobB[3]=validateField(startIoJobBField.get(), jobB, 3)
+    if jobQuantity=="3" :
+        jobC[0]=validateField(arrivalJobCField.get(), jobC, 0)
+        jobC[1]=validateField(runTimeJobCField.get(), jobC, 1)
+        jobC[2]=validateField(ioJobCField.get(), jobC, 2)
+        jobC[3]=validateField(startIoJobCField.get(), jobC, 3)
+    print(jobA[0], jobA[1], jobA[2], jobA[3], jobB[0], jobB[1], jobB[2], jobB[3], jobC[0], jobC[1], jobC[2], jobC[3], sep=",")
+        #Before to call the other window persist data in the object Job and queue
+        #Call Window result
+        
 
 #Event for CANCEL button on click
-def eventCancelBWButton():
-    quantumTime.set("")
-    periodTime.set("")
-    jobAComboBox.current(newindex=3)
-    jobBComboBox.current(newindex=3)
-    jobCComboBox.current(newindex=3)
-    jobTwoOptionsComboBox.current(newindex=1)
+def eventCloseButtonAW(window):
+    window.destroy()
 
-#Validation for just acept numbers
-#This code was taken from: https://riptutorial.com/es/tkinter/example/27780/anadiendo-validacion-a-un-widget-de-entrada
-def onlyNumbers(char):
-    return char.isdigit()
 
-#---We need a function to disabled comboBox B, C when is chosen 2 or 1 job in the last window
+#Disable combox JobB when user just chose 1 job to run
+def disbledEnabledFieldsB(quantity):
+    if quantity == 1:
+        return "disabled"
+    return "normal"
 
-#Create the widgets and add them in a grid to add all the widgets needed in the right places
-#Labels
-tk.Label(frameBasicDataWindow,text="Jobs, period & Basic data", font=("Arial", 18), bg='#EAF6F5').grid(row=0, column=0, sticky="W", columnspan=2, padx=10, pady=20)
-tk.Label(frameBasicDataWindow,text="Priority", font=("Arial", 10), bg='#EAF6F5').grid(row=1, column=1, sticky="W", padx=20, pady=1)
-tk.Label(frameBasicDataWindow,text="Job A:*", font=("Arial", 14), bg='#EAF6F5').grid(row=2, column=0, sticky="E", padx=10, pady=10)
-jobBLabel=tk.Label(frameBasicDataWindow,text="Job B:*", font=("Arial", 14), bg='#EAF6F5')
-jobBLabel.grid(row=3, column=0, sticky="E", padx=10, pady=10)
-jobCLabel=tk.Label(frameBasicDataWindow,text="Job C:*", font=("Arial", 14), bg='#EAF6F5')
-jobCLabel.grid(row=4, column=0, sticky="E", padx=10, pady=10)
-tk.Label(frameBasicDataWindow,text="----------------------------------------------------------------------------------------", font=("Arial", 12), bg='#EAF6F5').grid(row=5, column=0, sticky="W",columnspan=2, padx=40)
-tk.Label(frameBasicDataWindow,text="Quantum time:*", font=("Arial", 14), bg='#EAF6F5').grid(row=6, column=0, sticky="E", padx=10, pady=10)
-tk.Label(frameBasicDataWindow,text="Period time 'S':*", font=("Arial", 14), bg='#EAF6F5').grid(row=7, column=0, sticky="E", padx=10, pady=10)
-tk.Label(frameBasicDataWindow,text="Do you want to add more", font=("Arial", 12), bg='#EAF6F5').grid(row=8, column=0, sticky="E", padx=10)
-tk.Label(frameBasicDataWindow,text="information for the simulation?", font=("Arial", 12), bg='#EAF6F5').grid(row=9, column=0, sticky="E", padx=10)
+#Disable combox JobC when user just chose max 2 jobs to run
+def disbledEnabledFieldsC(quantity):
+    if quantity == 1 or quantity == 2:
+        return "disabled"
+    return "normal"
 
-#Inputs or fields
-validation = frameBasicDataWindow.register(onlyNumbers)
+def setInitBW():
+    JobA=[0,0,0,0]
+    JobB=[0,0,0,0]
+    JobC=[0,0,0,0]
 
-quantumField=tk.Entry(frameBasicDataWindow, font=("Arial"), fg="gray", width=17, textvariable=quantumTime, validate="key", validatecommand=(validation, '%S'))
-quantumField.grid(row=6, column=1, sticky="W", padx=20, pady=10)
+#Function wich draw the window for the basic data
+def drawAditionalDataWindow(quantity, arrivalJobA, arrivalJobB, arrivalJobC, runTimeJobA, runTimeJobB, runTimeJobC, ioJobC, ioJobB, ioJobA, startIoJobC, startIoJobB, startIoJobA, basicDataWindow):
+    basicDataWindow.withdraw()
+    #Window or root: First we should create the root or window
+    aditionalDataWindow=tk.Tk()
+    aditionalDataWindow.title("MLFQ Simulation - Aditional Data Window")
+    aditionalDataWindow.resizable(False,False)
+    aditionalDataWindow.iconbitmap("/icon.ico")
+    aditionalDataWindow.config(bg='#EAF6F5')
+    aditionalDataWindow.geometry('800x400+500+150')
 
-periodField=tk.Entry(frameBasicDataWindow, font=("Arial"), fg="gray", width=17, textvariable=periodTime, validate="key", validatecommand=(validation, '%S'))
-periodField.grid(row=7, column=1, sticky="W", padx=20, pady=10)
+    #Create the widgets and add them in a grid to add all the widgets needed in the right places
+    #Labels
+    tk.Label(aditionalDataWindow,text="Additional Data", font=("Arial", 18), bg='#EAF6F5').grid(row=0, column=0, sticky="W", columnspan=5, padx=10, pady=20)
+    tk.Label(aditionalDataWindow,text="Arrival Time", font=("Arial", 14), bg='#EAF6F5').grid(row=1, column=1, sticky="W", padx=10, pady=10)
+    tk.Label(aditionalDataWindow,text="Run Time", font=("Arial", 14), bg='#EAF6F5').grid(row=1, column=2, sticky="W", padx=10, pady=10)
+    tk.Label(aditionalDataWindow,text="I/O Time", font=("Arial", 14), bg='#EAF6F5').grid(row=1, column=3, sticky="W", padx=10, pady=10)
+    tk.Label(aditionalDataWindow,text="How often start I/O process*", font=("Arial", 10), bg='#EAF6F5').grid(row=1, column=4, sticky="W", padx=10, pady=10)
+    tk.Label(aditionalDataWindow,text="Job A:", font=("Arial", 14), bg='#EAF6F5').grid(row=2, column=0, sticky="E", padx=10, pady=10)
+    tk.Label(aditionalDataWindow,text="Job B:", font=("Arial", 14), bg='#EAF6F5').grid(row=3, column=0, sticky="E", padx=10, pady=10)
+    tk.Label(aditionalDataWindow,text="Job C:", font=("Arial", 14), bg='#EAF6F5').grid(row=4, column=0, sticky="E", padx=10, pady=10)
 
-#ComboBox
-options=["High", "Medium", "Low", "N/A"]
-twoOptions=["Yes", "No"]
-jobAComboBox=cb.Combobox(frameBasicDataWindow, width=14, state="readonly")
-jobAComboBox.grid(row=2, column=1, sticky="W", padx=20, pady=10)
-jobAComboBox['values']=options
-jobAComboBox.current(newindex=3)
+    tk.Label(aditionalDataWindow,text="This field are additional less the last field, if user fill out the 'I/O time' in a process*", font=("Arial", 12), bg='#EAF6F5', fg="gray").grid(row=6, column=0, sticky="W", padx=200, columnspan=5)
 
-jobBComboBox=cb.Combobox(frameBasicDataWindow, width=14, state="readonly")
-jobBComboBox.grid(row=3, column=1, sticky="W", padx=20, pady=10)
-jobBComboBox['values']=options
-jobBComboBox.current(newindex=3)
+    #Inputs or fields
+    validation = basicDataWindow.register(sgf.onlyNumbers)
 
-jobCComboBox=cb.Combobox(frameBasicDataWindow, width=14, state="readonly")
-jobCComboBox.grid(row=4, column=1, sticky="W", padx=20, pady=10)
-jobCComboBox['values']=options
-jobCComboBox.current(newindex=3)
+    #JOB A
+    arrivalJobAField=tk.Entry(aditionalDataWindow, font=("Arial"), fg="gray", width=12, validate="key", validatecommand=(validation, '%S'))
+    arrivalJobAField.grid(row=2, column=1, sticky="W", padx=10, pady=10)
 
-jobTwoOptionsComboBox=cb.Combobox(frameBasicDataWindow, width=14, state="readonly")
-jobTwoOptionsComboBox.grid(row=8, column=1, sticky="W", padx=20, pady=10, rowspan=2)
-jobTwoOptionsComboBox['values']=twoOptions
-jobTwoOptionsComboBox.current(newindex=1)
+    runTimeJobAField=tk.Entry(aditionalDataWindow, font=("Arial"), fg="gray", width=12, validate="key", validatecommand=(validation, '%S'))
+    runTimeJobAField.grid(row=2, column=2, sticky="W", padx=10, pady=10)
 
-#Buttons
-okButtonBW=tk.Button(frameBasicDataWindow, text="OK", width=10, height=2, font=("Arial"), command=eventOkBWButton)
-okButtonBW.grid(row=10, column=0, sticky="E", padx=10, pady=20)
+    ioJobAField=tk.Entry(aditionalDataWindow, font=("Arial"), fg="gray", width=12, validate="key", validatecommand=(validation, '%S'))
+    ioJobAField.grid(row=2, column=3, sticky="W", padx=10, pady=10)
 
-cancelButtonBW=tk.Button(frameBasicDataWindow, text="CANCEL", width=10, height=2, font=("Arial"), command=eventCancelBWButton)
-cancelButtonBW.grid(row=10, column=1, sticky="W", padx=10, pady=20)
+    startIoJobAField=tk.Entry(aditionalDataWindow, font=("Arial"), fg="gray", width=12, validate="key", validatecommand=(validation, '%S'))
+    startIoJobAField.grid(row=2, column=4, sticky="W", padx=10, pady=10)
 
-#Should be always in the end of the file
-basicDataWindow.mainloop()
+    #JOB B
+    arrivalJobBField=tk.Entry(aditionalDataWindow, font=("Arial"), fg="gray", width=12, validate="key", validatecommand=(validation, '%S'), state=disbledEnabledFieldsB(int(quantity)))
+    arrivalJobBField.grid(row=3, column=1, sticky="W", padx=10, pady=10)
 
+    runTimeJobBField=tk.Entry(aditionalDataWindow, font=("Arial"), fg="gray", width=12, validate="key", validatecommand=(validation, '%S'), state=disbledEnabledFieldsB(int(quantity)))
+    runTimeJobBField.grid(row=3, column=2, sticky="W", padx=10, pady=10)
+
+    ioJobBField=tk.Entry(aditionalDataWindow, font=("Arial"), fg="gray", width=12, validate="key", validatecommand=(validation, '%S'), state=disbledEnabledFieldsB(int(quantity)))
+    ioJobBField.grid(row=3, column=3, sticky="W", padx=10, pady=10)
+
+    startIoJobBField=tk.Entry(aditionalDataWindow, font=("Arial"), fg="gray", width=12, validate="key", validatecommand=(validation, '%S'), state=disbledEnabledFieldsB(int(quantity)))
+    startIoJobBField.grid(row=3, column=4, sticky="W", padx=10, pady=10)
+
+    #JOB C
+    arrivalJobCField=tk.Entry(aditionalDataWindow, font=("Arial"), fg="gray", width=12, validate="key", validatecommand=(validation, '%S'), state=disbledEnabledFieldsC(int(quantity)))
+    arrivalJobCField.grid(row=4, column=1, sticky="W", padx=10, pady=10)
+
+    runTimeJobCField=tk.Entry(aditionalDataWindow, font=("Arial"), fg="gray", width=12, validate="key", validatecommand=(validation, '%S'), state=disbledEnabledFieldsC(int(quantity)))
+    runTimeJobCField.grid(row=4, column=2, sticky="W", padx=10, pady=10)
+
+    ioJobCField=tk.Entry(aditionalDataWindow, font=("Arial"), fg="gray", width=12, validate="key", validatecommand=(validation, '%S'), state=disbledEnabledFieldsC(int(quantity)))
+    ioJobCField.grid(row=4, column=3, sticky="W", padx=10, pady=10)
+
+    startIoJobCField=tk.Entry(aditionalDataWindow, font=("Arial"), fg="gray", width=12, validate="key", validatecommand=(validation, '%S'), state=disbledEnabledFieldsC(int(quantity)))
+    startIoJobCField.grid(row=4, column=4, sticky="W", padx=10, pady=10)
+
+
+    #Buttons
+    startButton=tk.Button(aditionalDataWindow, text="START", width=10, height=2, font=("Arial"), command=lambda:eventstartButton(quantity, arrivalJobA, arrivalJobB, arrivalJobC, runTimeJobA, runTimeJobB, runTimeJobC, ioJobC, ioJobB, ioJobA, startIoJobC, startIoJobB, startIoJobA))
+    startButton.grid(row=5, column=0, sticky="E", padx=10, pady=20, columnspan=3)
+
+    closeButtonAW=tk.Button(aditionalDataWindow, text="CANCEL", width=10, height=2, font=("Arial"), command=lambda:eventCloseButtonAW(aditionalDataWindow))
+    closeButtonAW.grid(row=5, column=3, sticky="W", padx=10, pady=20, columnspan=2)
+
+    #Should be always in the end of the file
+    aditionalDataWindow.mainloop()
