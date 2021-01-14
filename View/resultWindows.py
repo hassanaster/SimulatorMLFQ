@@ -7,6 +7,7 @@
 # @Authors: Miriam Arango, Luisa Arboleda, Yeison Quinto
 # @Version: Version 1.0
 # @Date: 06 - 01 - 2021
+# @Last modify Date: 14 - 01 - 2021
 #----------------------------------------------------------------------------------
 
 import tkinter as tk
@@ -17,8 +18,7 @@ import View.shareGraphicFunctions as sgf
 # Functions to create the events for each button
 #----------------------------------------------------------------------------------
 
-def drawResultWindow(simulationWindow, mainWindow):
-    #Window or root: First we should create the root or window
+def drawResultWindow(jobA, jobB, jobC, queueA, queueB, queueC, simulationWindow, mainWindow):
     simulationWindow.withdraw()
     resultWindow=tk.Toplevel()
     resultWindow.title("MLFQ Simulation - Result Window")

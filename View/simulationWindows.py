@@ -6,7 +6,8 @@
 #----------------------------------------------------------------------------------
 # @Authors: Miriam Arango, Luisa Arboleda, Yeison Quinto
 # @Version: Version 1.0
-# @Date: 04 - 01 - 2021
+# @Creation Date: 04 - 01 - 2021
+# @Last modify Date: 13 - 01 - 2021
 #----------------------------------------------------------------------------------
 
 import tkinter as tk
@@ -31,16 +32,14 @@ def eventFinishButton():
     mb.showinfo(title="Finish Button", message="Estoy en el boton de finish")
 
 #Function for Result button, to display window result
-def eventResultButton(simulationWindow, mainWindow):
+def eventResultButton(jobA, jobB, jobC, queueA, queueB, queueC, simulationWindow, mainWindow):
     #Here we have to make calculations to show the result in the next window
     #We have to draw the same result that we show here in the next window
-    drawResultWindow(simulationWindow, mainWindow)
+    drawResultWindow(jobA, jobB, jobC, queueA, queueB, queueC, simulationWindow, mainWindow)
 
 #Function to draw Simulation Window
-def drawSimulationWindow(aditionalDataWindow, mainWindow):
-
+def drawSimulationWindow(jobA, jobB, jobC, queueA, queueB, queueC, aditionalDataWindow, mainWindow):
     aditionalDataWindow.withdraw()
-    #Window or root: First we should create the root or window
     simulationWindow=tk.Toplevel()
     simulationWindow.title("MLFQ Simulation - Simulation Window")
     simulationWindow.resizable(False,False)
@@ -70,7 +69,7 @@ def drawSimulationWindow(aditionalDataWindow, mainWindow):
     finishButton=tk.Button(simulationWindow, text="FINISH", width=10, height=2, font=("Arial"), command=lambda:eventFinishButton())
     finishButton.grid(row=3, column=2, padx=10, pady=20)
 
-    resultButton=tk.Button(simulationWindow, text="RESULT", width=10, height=2, font=("Arial"), command=lambda:eventResultButton(simulationWindow, mainWindow))
+    resultButton=tk.Button(simulationWindow, text="RESULT", width=10, height=2, font=("Arial"), command=lambda:eventResultButton(jobA, jobB, jobC, queueA, queueB, queueC, simulationWindow, mainWindow))
     resultButton.grid(row=4, column=0, padx=10, pady=20, columnspan=2)
 
     closeButtonSW=tk.Button(simulationWindow, text="CLOSE", width=10, height=2, font=("Arial"), command=lambda:sgf.eventCloseButton(mainWindow))

@@ -6,7 +6,8 @@
 #----------------------------------------------------------------------------------
 # @Authors: Miriam Arango, Luisa Arboleda, Yeison Quinto
 # @Version: Version 1.0
-# @Date: 26 - 12 - 2020
+# @Creation Date: 26 - 12 - 2020
+# @Last modification Date: 10 - 01 - 2021
 #----------------------------------------------------------------------------------
 
 
@@ -15,25 +16,8 @@ import tkinter.messagebox as mb
 import View.shareGraphicFunctions as sgf
 import tkinter.ttk as cb
 from View.basicDataWindow import *
-
-#----------------------------------------------------------------------------------
-# Variables
-#----------------------------------------------------------------------------------
-#Global variables
-queue=""
-job=""
-
-#We create the root window here to be able to call StringVar() function
-mainWindow=tk.Tk()
-
-#variables from fields I need to recover
-quantityQueue=tk.StringVar()
-quantityJob=tk.StringVar()
-
-#variables from fields I need to recover
-quantumTime=tk.StringVar()
-periodTime=tk.StringVar()
-
+from Model.JobClass import *
+from Model.queueClass import *
 
 #----------------------------------------------------------------------------------
 # Functions to create the events for each button
@@ -41,8 +25,16 @@ periodTime=tk.StringVar()
 
 #Event for OK button on click
 def eventOkButton():
-    global queue
-    global job
+    #Instance from Jobs created
+    jobA=Job()
+    jobB=Job()
+    jobC=Job()
+
+    #Instance from Queue created
+    queueA=Queue()
+    queueB=Queue()
+    queueC=Queue()
+
     queue=quantityQueue.get()
     job=quantityJob.get()
     if (quantityJob.get()==""):
@@ -50,32 +42,45 @@ def eventOkButton():
     if (quantityQueue.get()==""):
         queue="0"
     if((int(job)>=1 and int(job)<=3) and (int(queue)>=1 and int(queue)<=3)):
-        #Define a object Job which will persist the data in this part (set job), (Set queue)
-        print(job, queue, sep=",")
-        drawBasicDataWindow(job, quantumTime, periodTime, mainWindow)
-        setInit()
+        #Quantity for the jobs created
+        job=int(job)
+        queue=int(queue)
+        if job>=1:
+            jobA.setQuantity(job)
+        if job>=2:
+            jobB.setQuantity(job)
+        if job==3:
+            jobC.setQuantity(job)
+        print(jobA.getQuantity(), jobB.getQuantity(), jobC.getQuantity(), sep=",")
+        #Quantity for the queues created
+        if queue>=1:
+            queueA.setQuantity(queue)
+        if queue>=2:
+            queueB.setQuantity(queue)
+        if queue==3:
+            queueC.setQuantity(queue)
+        #print(queueA.getQuantity(), queueB.getQuantity(), queueC.getQuantity(), sep=",")
+        drawBasicDataWindow(jobA, jobB, jobC, queueA, queueB, queueC, quantumTime, periodTime, mainWindow)
     else:
-        setInit()
         mb.showerror(title="Error", message="Numbers admitted for both fields are 1, 2 or 3, please take a look.")
-    
-
-#Event for CANCEL button on click
-def eventCloseButton():
-    mainWindow.destroy()
-
-def setInit():
-    global queue
-    global job
-    queue=""
-    job=""
 
 #---Start the main program
 #root window
+#We create the root window here to be able to call StringVar() function
+mainWindow=tk.Tk()
 mainWindow.title("MLFQ Simulation - Main window")
 mainWindow.resizable(False,False)
 mainWindow.iconbitmap("icon.ico")
 mainWindow.config(bg='#EAF6F5')
 mainWindow.geometry('350x250+500+350')
+
+#variables from fields I need to recover for this windows, mainWindow.
+quantityQueue=tk.StringVar()
+quantityJob=tk.StringVar()
+
+#variables from fields I need to recover from Basic Data Window
+quantumTime=tk.StringVar()
+periodTime=tk.StringVar()
 
 #Widgets creation
 #Labels
@@ -97,7 +102,7 @@ jobField.grid(row=2, column=1, sticky="W", padx=5, pady=5)
 okButton=tk.Button(mainWindow, text="OK", width=10, height=2, font=("Arial"), command=eventOkButton)
 okButton.grid(row=3, column=0, padx=10, pady=10)
 
-cancelButton=tk.Button(mainWindow, text="CLOSE", width=10, height=2, font=("Arial"), command=eventCloseButton)
+cancelButton=tk.Button(mainWindow, text="CLOSE", width=10, height=2, font=("Arial"), command=lambda:sgf.eventCloseButton(mainWindow))
 cancelButton.grid(row=3, column=1, padx=10, pady=10)
 
 #Should be always in the end of the file

@@ -6,7 +6,8 @@
 #----------------------------------------------------------------------------------
 # @Authors: Miriam Arango, Luisa Arboleda, Yeison Quinto
 # @Version: Version 1.0
-# @Date: 03 - 01 - 2021
+# @Creation Date: 03 - 01 - 2021
+# @Last modify Date: 12 - 01 - 2021
 #----------------------------------------------------------------------------------
 
 import tkinter as tk
@@ -15,68 +16,97 @@ import View.shareGraphicFunctions as sgf
 from View.simulationWindows import *
 
 #----------------------------------------------------------------------------------
-# Variables
-#----------------------------------------------------------------------------------
-#basicDataWindow=tk.Toplevel()
-
-#Global variables
-jobA=[0,0,0,0]
-jobB=[0,0,0,0]
-jobC=[0,0,0,0]
-
-#----------------------------------------------------------------------------------
 # Functions to create the events for each button
 #----------------------------------------------------------------------------------
 
-#Event for OK button on click
-def validateField (data, array, position):
-    if data=="":
-        array[position]=0
-    else:
-        array[position]=int(data)
-
-def eventstartButton(jobQuantity, arrivalJobAField, arrivalJobBField, arrivalJobCField, runTimeJobAField, runTimeJobBField, runTimeJobCField, ioJobCField, ioJobBField, ioJobAField, startIoJobCField, startIoJobBField, startIoJobAField, aditionalDataWindow, mainWindow):
-    global JobA
-    global JobB
-    global JobC
-    if jobQuantity=="1":
-        jobA[0]=validateField(arrivalJobAField.get(), jobA, 0)
-        jobA[1]=validateField(runTimeJobAField.get(), jobA, 1)
-        jobA[2]=validateField(ioJobAField.get(), jobA, 2)
-        jobA[3]=validateField(startIoJobAField.get(), jobA, 3)
-    if jobQuantity=="2" :
-        jobB[0]=validateField(arrivalJobBField.get(), jobB, 0)
-        jobB[1]=validateField(runTimeJobBField.get(), jobB, 1)
-        jobB[2]=validateField(ioJobBField.get(), jobB, 2)
-        jobB[3]=validateField(startIoJobBField.get(), jobB, 3)
-    if jobQuantity=="3" :
-        jobC[0]=validateField(arrivalJobCField.get(), jobC, 0)
-        jobC[1]=validateField(runTimeJobCField.get(), jobC, 1)
-        jobC[2]=validateField(ioJobCField.get(), jobC, 2)
-        jobC[3]=validateField(startIoJobCField.get(), jobC, 3)
-    print(jobA[0], jobA[1], jobA[2], jobA[3], jobB[0], jobB[1], jobB[2], jobB[3], jobC[0], jobC[1], jobC[2], jobC[3], sep=",")
-    #Before to call the other window persist data in the object Job and queue
-    drawSimulationWindow(aditionalDataWindow, mainWindow)
+#Event for Start button on click
+def eventstartButton(jobA, jobB, jobC, queueA, queueB, queueC, arrivalJobAField, arrivalJobBField, arrivalJobCField, runTimeJobAField, runTimeJobBField, runTimeJobCField, ioJobCField, ioJobBField, ioJobAField, startIoJobCField, startIoJobBField, startIoJobAField, aditionalDataWindow, mainWindow):
+    #Setting the data for JobA
+    if jobA.getQuantity()>=1:
         
-#Disable combox JobB when user just chose 1 job to run
+        if arrivalJobAField.get()=="":
+            jobA.setArrivalTime(0)
+        else:
+            jobA.setArrivalTime(int(arrivalJobAField.get()))
+        
+        if runTimeJobAField.get()=="":
+            jobA.setRunTime(0)
+        else:
+            jobA.setRunTime(int(runTimeJobAField.get()))
+
+        if ioJobAField.get()=="":
+            jobA.setIoTime(0)
+        else:
+            jobA.setIoTime(int(ioJobAField.get()))
+
+        if startIoJobAField.get()=="":
+            jobA.setStartIoTime(0)
+        else:
+            jobA.setStartIoTime(int(startIoJobAField.get()))
+
+    #Setting the data for JobB
+    if jobA.getQuantity()>=2 :
+
+        if arrivalJobBField.get()=="":
+            jobB.setArrivalTime(0)
+        else:
+            jobB.setArrivalTime(int(arrivalJobBField.get()))
+
+        if runTimeJobBField.get()=="":
+            jobB.setRunTime(0)
+        else:
+            jobB.setRunTime(int(runTimeJobBField.get()))
+
+        if ioJobBField.get()=="":
+            jobB.setIoTime(0)
+        else:
+            jobB.setIoTime(int(ioJobBField.get()))
+
+        if startIoJobBField.get()=="":
+            jobB.setStartIoTime(0)
+        else:
+            jobB.setStartIoTime(int(startIoJobBField.get()))
+
+    #Setting the data for JobC
+    if jobA.getQuantity()==3 :
+
+        if arrivalJobCField.get()=="":
+            jobC.setArrivalTime(0)
+        else:
+            jobC.setArrivalTime(int(arrivalJobCField.get()))
+
+        if runTimeJobCField.get()=="":
+            jobC.setRunTime(0)
+        else:
+            jobC.setRunTime(int(runTimeJobCField.get()))
+
+        if ioJobCField.get()=="":
+            jobC.setIoTime(0)
+        else:
+            jobC.setIoTime(int(ioJobCField.get()))
+
+        if startIoJobCField.get()=="":
+            jobC.setStartIoTime(0)
+        else:
+            jobC.setStartIoTime(int(startIoJobCField.get()))
+
+    #print(jobA.getArrivalTime(), jobA.getRunTime(), jobA.getIoTime(), jobA.getStartIoTime(), jobB.getArrivalTime(), jobB.getRunTime(), jobB.getIoTime(), jobB.getStartIoTime(), jobB.getArrivalTime(), jobC.getRunTime(), jobC.getIoTime(), jobC.getStartIoTime(), sep=",")
+    drawSimulationWindow(jobA, jobB, jobC, queueA, queueB, queueC, aditionalDataWindow, mainWindow)
+        
+#Disable Fields JobB when user just chose 1 job to run
 def disbledEnabledFieldsB(quantity):
     if quantity == 1:
         return "disabled"
     return "normal"
 
-#Disable combox JobC when user just chose max 2 jobs to run
+#Disable Field JobC when user just chose max 2 jobs to run
 def disbledEnabledFieldsC(quantity):
     if quantity == 1 or quantity == 2:
         return "disabled"
     return "normal"
 
-def setInitBW():
-    JobA=[0,0,0,0]
-    JobB=[0,0,0,0]
-    JobC=[0,0,0,0]
-
-#Function wich draw the window for the basic data
-def drawAditionalDataWindow(quantity, arrivalJobA, arrivalJobB, arrivalJobC, runTimeJobA, runTimeJobB, runTimeJobC, ioJobC, ioJobB, ioJobA, startIoJobC, startIoJobB, startIoJobA, basicDataWindow, mainWindow):
+#Function wich draw the window for aditional Data
+def drawAditionalDataWindow(jobA, jobB, jobC, queueA, queueB, queueC, arrivalJobA, arrivalJobB, arrivalJobC, runTimeJobA, runTimeJobB, runTimeJobC, ioJobC, ioJobB, ioJobA, startIoJobC, startIoJobB, startIoJobA, basicDataWindow, mainWindow):
     basicDataWindow.withdraw()
     #Window or root: First we should create the root or window
     aditionalDataWindow=tk.Toplevel()
@@ -103,48 +133,48 @@ def drawAditionalDataWindow(quantity, arrivalJobA, arrivalJobB, arrivalJobC, run
     validation = basicDataWindow.register(sgf.onlyNumbers)
 
     #JOB A
-    arrivalJobAField=tk.Entry(aditionalDataWindow, font=("Arial"), fg="gray", width=12, validate="key", validatecommand=(validation, '%S'))
+    arrivalJobAField=tk.Entry(aditionalDataWindow, font=("Arial"), fg="gray", width=12, textvariable=arrivalJobA, validate="key", validatecommand=(validation, '%S'))
     arrivalJobAField.grid(row=2, column=1, sticky="W", padx=10, pady=10)
 
-    runTimeJobAField=tk.Entry(aditionalDataWindow, font=("Arial"), fg="gray", width=12, validate="key", validatecommand=(validation, '%S'))
+    runTimeJobAField=tk.Entry(aditionalDataWindow, font=("Arial"), fg="gray", width=12, textvariable=runTimeJobA, validatecommand=(validation, '%S'))
     runTimeJobAField.grid(row=2, column=2, sticky="W", padx=10, pady=10)
 
-    ioJobAField=tk.Entry(aditionalDataWindow, font=("Arial"), fg="gray", width=12, validate="key", validatecommand=(validation, '%S'))
+    ioJobAField=tk.Entry(aditionalDataWindow, font=("Arial"), fg="gray", width=12, textvariable=ioJobA,  validate="key", validatecommand=(validation, '%S'))
     ioJobAField.grid(row=2, column=3, sticky="W", padx=10, pady=10)
 
-    startIoJobAField=tk.Entry(aditionalDataWindow, font=("Arial"), fg="gray", width=12, validate="key", validatecommand=(validation, '%S'))
+    startIoJobAField=tk.Entry(aditionalDataWindow, font=("Arial"), fg="gray", width=12, textvariable=startIoJobA, validate="key", validatecommand=(validation, '%S'))
     startIoJobAField.grid(row=2, column=4, sticky="W", padx=10, pady=10)
 
     #JOB B
-    arrivalJobBField=tk.Entry(aditionalDataWindow, font=("Arial"), fg="gray", width=12, validate="key", validatecommand=(validation, '%S'), state=disbledEnabledFieldsB(int(quantity)))
+    arrivalJobBField=tk.Entry(aditionalDataWindow, font=("Arial"), fg="gray", width=12, validate="key", textvariable=arrivalJobB, validatecommand=(validation, '%S'), state=disbledEnabledFieldsB(jobA.getQuantity()))
     arrivalJobBField.grid(row=3, column=1, sticky="W", padx=10, pady=10)
 
-    runTimeJobBField=tk.Entry(aditionalDataWindow, font=("Arial"), fg="gray", width=12, validate="key", validatecommand=(validation, '%S'), state=disbledEnabledFieldsB(int(quantity)))
+    runTimeJobBField=tk.Entry(aditionalDataWindow, font=("Arial"), fg="gray", width=12, validate="key", textvariable=runTimeJobB, validatecommand=(validation, '%S'), state=disbledEnabledFieldsB(jobA.getQuantity()))
     runTimeJobBField.grid(row=3, column=2, sticky="W", padx=10, pady=10)
 
-    ioJobBField=tk.Entry(aditionalDataWindow, font=("Arial"), fg="gray", width=12, validate="key", validatecommand=(validation, '%S'), state=disbledEnabledFieldsB(int(quantity)))
+    ioJobBField=tk.Entry(aditionalDataWindow, font=("Arial"), fg="gray", width=12, validate="key", textvariable= ioJobB, validatecommand=(validation, '%S'), state=disbledEnabledFieldsB(jobA.getQuantity()))
     ioJobBField.grid(row=3, column=3, sticky="W", padx=10, pady=10)
 
-    startIoJobBField=tk.Entry(aditionalDataWindow, font=("Arial"), fg="gray", width=12, validate="key", validatecommand=(validation, '%S'), state=disbledEnabledFieldsB(int(quantity)))
+    startIoJobBField=tk.Entry(aditionalDataWindow, font=("Arial"), fg="gray", width=12, validate="key", textvariable=startIoJobB, validatecommand=(validation, '%S'), state=disbledEnabledFieldsB(jobA.getQuantity()))
     startIoJobBField.grid(row=3, column=4, sticky="W", padx=10, pady=10)
 
     #JOB C
-    arrivalJobCField=tk.Entry(aditionalDataWindow, font=("Arial"), fg="gray", width=12, validate="key", validatecommand=(validation, '%S'), state=disbledEnabledFieldsC(int(quantity)))
+    arrivalJobCField=tk.Entry(aditionalDataWindow, font=("Arial"), fg="gray", width=12, validate="key", textvariable=arrivalJobC, validatecommand=(validation, '%S'), state=disbledEnabledFieldsB(jobA.getQuantity()))
     arrivalJobCField.grid(row=4, column=1, sticky="W", padx=10, pady=10)
 
-    runTimeJobCField=tk.Entry(aditionalDataWindow, font=("Arial"), fg="gray", width=12, validate="key", validatecommand=(validation, '%S'), state=disbledEnabledFieldsC(int(quantity)))
+    runTimeJobCField=tk.Entry(aditionalDataWindow, font=("Arial"), fg="gray", width=12, validate="key", textvariable=runTimeJobC, validatecommand=(validation, '%S'), state=disbledEnabledFieldsC(jobA.getQuantity()))
     runTimeJobCField.grid(row=4, column=2, sticky="W", padx=10, pady=10)
 
-    ioJobCField=tk.Entry(aditionalDataWindow, font=("Arial"), fg="gray", width=12, validate="key", validatecommand=(validation, '%S'), state=disbledEnabledFieldsC(int(quantity)))
+    ioJobCField=tk.Entry(aditionalDataWindow, font=("Arial"), fg="gray", width=12, validate="key", textvariable=ioJobC, validatecommand=(validation, '%S'), state=disbledEnabledFieldsC(jobA.getQuantity()))
     ioJobCField.grid(row=4, column=3, sticky="W", padx=10, pady=10)
 
-    startIoJobCField=tk.Entry(aditionalDataWindow, font=("Arial"), fg="gray", width=12, validate="key", validatecommand=(validation, '%S'), state=disbledEnabledFieldsC(int(quantity)))
+    startIoJobCField=tk.Entry(aditionalDataWindow, font=("Arial"), fg="gray", width=12, validate="key", textvariable=startIoJobC, validatecommand=(validation, '%S'), state=disbledEnabledFieldsC(jobA.getQuantity()))
     startIoJobCField.grid(row=4, column=4, sticky="W", padx=10, pady=10)
 
 
     #Buttons
-    startButton=tk.Button(aditionalDataWindow, text="START", width=10, height=2, font=("Arial"), command=lambda:eventstartButton(quantity, arrivalJobA, arrivalJobB, arrivalJobC, runTimeJobA, runTimeJobB, runTimeJobC, ioJobC, ioJobB, ioJobA, startIoJobC, startIoJobB, startIoJobA, aditionalDataWindow, mainWindow))
-    startButton.grid(row=5, column=0, sticky="E", padx=10, pady=20, columnspan=3)
+    startButton=tk.Button(aditionalDataWindow, text="START", width=10, height=2, font=("Arial"), command=lambda:eventstartButton(jobA, jobB, jobC, queueA, queueB, queueC, arrivalJobA, arrivalJobB, arrivalJobC, runTimeJobA, runTimeJobB, runTimeJobC, ioJobC, ioJobB, ioJobA, startIoJobC, startIoJobB, startIoJobA, aditionalDataWindow, mainWindow))
+    startButton.grid(row=5, column=0, sticky="E", padx=30, pady=20, columnspan=3)
 
     closeButtonAW=tk.Button(aditionalDataWindow, text="CLOSE", width=10, height=2, font=("Arial"), command=lambda:sgf.eventCloseButton(mainWindow))
     closeButtonAW.grid(row=5, column=3, sticky="W", padx=10, pady=20, columnspan=2)

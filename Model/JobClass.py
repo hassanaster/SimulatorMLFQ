@@ -15,6 +15,7 @@ class Job():
     def __init__(self):
 
         #Initial Attributes
+        self.__quantity=0
         self.__priority=3
         self.__arrivalTime=0
         self.__runTime=0
@@ -27,6 +28,9 @@ class Job():
         self.__responsiveTime=0.0
     
     #Setters
+    def setQuantity(self, data):
+        self.__quantity=data
+
     def setPriority(self, data):
         self.__priority=data
 
@@ -52,6 +56,9 @@ class Job():
         self.__responsiveTime=data
     
     #Getters
+    def getQuantity(self):
+        return self.__quantity
+
     def getPriority(self):
         return self.__priority
     
@@ -77,10 +84,10 @@ class Job():
         return self.__responsiveTime
 
 
-''' Create an object
+"""Create an object
 
 jobA=Job()
 jobA.priority
 
 para poder referirse a un atributo dentro de un metodo 
-self.arrivalTime=8
+self.arrivalTime=8"""
