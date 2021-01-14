@@ -13,3 +13,7 @@
 #This code was taken from: https://riptutorial.com/es/tkinter/example/27780/anadiendo-validacion-a-un-widget-de-entrada
 def onlyNumbers(char):
     return char.isdigit()
+
+#Event for CANCEL button on click
+def eventCloseButton(window):
+   window.destroy()

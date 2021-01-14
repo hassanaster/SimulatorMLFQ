@@ -14,8 +14,7 @@ import tkinter.messagebox as mb
 #This module is to display combobox
 import tkinter.ttk as cb
 import View.shareGraphicFunctions as sgf
-from View.test import *
-#from View.aditionalDataWindows import *
+from View.aditionalDataWindows import *
 
 #----------------------------------------------------------------------------------
 # Variables
@@ -34,8 +33,8 @@ aditionalW=""
 # Functions to create the events for each button
 #----------------------------------------------------------------------------------
 
-#Event for OK button on click
-def eventOkBWButton(quantity, quantumTime, periodTime, jobAComboBox, jobBComboBox, jobCComboBox, jobTwoOptionsComboBox, arrivalJobA, arrivalJobB, arrivalJobC, runTimeJobA, runTimeJobB, runTimeJobC, ioJobC, ioJobB, ioJobA, startIoJobC, startIoJobB, startIoJobA, basicDataWindow):
+#Event for OK button on click - I pass mainWindow
+def eventOkBWButton(quantity, quantumTime, periodTime, jobAComboBox, jobBComboBox, jobCComboBox, jobTwoOptionsComboBox, arrivalJobA, arrivalJobB, arrivalJobC, runTimeJobA, runTimeJobB, runTimeJobC, ioJobC, ioJobB, ioJobA, startIoJobC, startIoJobB, startIoJobA, basicDataWindow, mainWindow):
     global quantum
     global period
     quantum=quantumTime.get()
@@ -52,17 +51,13 @@ def eventOkBWButton(quantity, quantumTime, periodTime, jobAComboBox, jobBComboBo
         setInitBW()
         mb.showerror(title="Error", message="Data typed for quantum and period field are invalid, please verify.")
     else:
-        #Validate if aditionalW=1 open simulation window, if not open AditionalDataWindow
         #Before to call the other window persist data in the object Job and queue
         print(quantum, period, priorityA, priorityB, priorityC, aditionalW, sep=",")
-        drawAditionalDataWindow(quantity, arrivalJobA, arrivalJobB, arrivalJobC, runTimeJobA, runTimeJobB, runTimeJobC, ioJobC, ioJobB, ioJobA, startIoJobC, startIoJobB, startIoJobA, basicDataWindow)
+        if aditionalW == 1:
+            drawSimulationWindow(basicDataWindow, mainWindow)
+        else:
+            drawAditionalDataWindow(quantity, arrivalJobA, arrivalJobB, arrivalJobC, runTimeJobA, runTimeJobB, runTimeJobC, ioJobC, ioJobB, ioJobA, startIoJobC, startIoJobB, startIoJobA, basicDataWindow, mainWindow)
         
-
-#Event for CANCEL button on click
-def eventCloseBWButton(window):
-    window.destroy()
-
-
 #Disable combox JobB when user just chose 1 job to run
 def disbledEnabledComboBoxB(quantity):
     if quantity == 1:
@@ -87,7 +82,7 @@ def setInitBW():
 def drawBasicDataWindow(quantity, quantumTime, periodTime, mainWindow):
     mainWindow.withdraw()
     #Function basicWindowWithdraw
-    basicDataWindow=tk.Toplevel(mainWindow)
+    basicDataWindow=tk.Toplevel()
     basicDataWindow.title("MLFQ Simulation - Basic Data Window")
     basicDataWindow.resizable(False,False)
     basicDataWindow.iconbitmap("icon.ico")
@@ -158,8 +153,8 @@ def drawBasicDataWindow(quantity, quantumTime, periodTime, mainWindow):
     jobTwoOptionsComboBox.current(newindex=1)
     
     #Buttons
-    okButtonBW=tk.Button(basicDataWindow, text="OK", width=10, height=2, font=("Arial"), command=lambda:eventOkBWButton(quantity, quantumTime, periodTime, jobAComboBox, jobBComboBox, jobCComboBox, jobTwoOptionsComboBox, arrivalJobA, arrivalJobB, arrivalJobC, runTimeJobA, runTimeJobB, runTimeJobC, ioJobC, ioJobB, ioJobA, startIoJobC, startIoJobB, startIoJobA, basicDataWindow))
+    okButtonBW=tk.Button(basicDataWindow, text="OK", width=10, height=2, font=("Arial"), command=lambda:eventOkBWButton(quantity, quantumTime, periodTime, jobAComboBox, jobBComboBox, jobCComboBox, jobTwoOptionsComboBox, arrivalJobA, arrivalJobB, arrivalJobC, runTimeJobA, runTimeJobB, runTimeJobC, ioJobC, ioJobB, ioJobA, startIoJobC, startIoJobB, startIoJobA, basicDataWindow, mainWindow))
     okButtonBW.grid(row=10, column=0, sticky="E", padx=10, pady=20)
 
-    cancelButtonBW=tk.Button(basicDataWindow, text="CLOSE", width=10, height=2, font=("Arial"), command=lambda:eventCloseBWButton(basicDataWindow))
+    cancelButtonBW=tk.Button(basicDataWindow, text="CLOSE", width=10, height=2, font=("Arial"), command=lambda:sgf.eventCloseButton(mainWindow))
     cancelButtonBW.grid(row=10, column=1, sticky="W", padx=10, pady=20)
