@@ -20,7 +20,7 @@ from View.simulationWindows import *
 #----------------------------------------------------------------------------------
 
 #Event for Start button on click
-def eventstartButton(jobA, jobB, jobC, queueA, queueB, queueC, arrivalJobAField, arrivalJobBField, arrivalJobCField, runTimeJobAField, runTimeJobBField, runTimeJobCField, ioJobCField, ioJobBField, ioJobAField, startIoJobCField, startIoJobBField, startIoJobAField, aditionalDataWindow, mainWindow):
+def eventstartButton(jobA, jobB, jobC, queue, arrivalJobAField, arrivalJobBField, arrivalJobCField, runTimeJobAField, runTimeJobBField, runTimeJobCField, ioJobCField, ioJobBField, ioJobAField, startIoJobCField, startIoJobBField, startIoJobAField, aditionalDataWindow, mainWindow):
     #Setting the data for JobA
     if jobA.getQuantity()>=1:
         
@@ -91,7 +91,7 @@ def eventstartButton(jobA, jobB, jobC, queueA, queueB, queueC, arrivalJobAField,
             jobC.setStartIoTime(int(startIoJobCField.get()))
 
     #print(jobA.getArrivalTime(), jobA.getRunTime(), jobA.getIoTime(), jobA.getStartIoTime(), jobB.getArrivalTime(), jobB.getRunTime(), jobB.getIoTime(), jobB.getStartIoTime(), jobB.getArrivalTime(), jobC.getRunTime(), jobC.getIoTime(), jobC.getStartIoTime(), sep=",")
-    drawSimulationWindow(jobA, jobB, jobC, queueA, queueB, queueC, aditionalDataWindow, mainWindow)
+    drawSimulationWindow(jobA, jobB, jobC, queue, aditionalDataWindow, mainWindow)
         
 #Disable Fields JobB when user just chose 1 job to run
 def disbledEnabledFieldsB(quantity):
@@ -106,7 +106,7 @@ def disbledEnabledFieldsC(quantity):
     return "normal"
 
 #Function wich draw the window for aditional Data
-def drawAditionalDataWindow(jobA, jobB, jobC, queueA, queueB, queueC, arrivalJobA, arrivalJobB, arrivalJobC, runTimeJobA, runTimeJobB, runTimeJobC, ioJobC, ioJobB, ioJobA, startIoJobC, startIoJobB, startIoJobA, basicDataWindow, mainWindow):
+def drawAditionalDataWindow(jobA, jobB, jobC, queue, arrivalJobA, arrivalJobB, arrivalJobC, runTimeJobA, runTimeJobB, runTimeJobC, ioJobC, ioJobB, ioJobA, startIoJobC, startIoJobB, startIoJobA, basicDataWindow, mainWindow):
     basicDataWindow.withdraw()
     #Window or root: First we should create the root or window
     aditionalDataWindow=tk.Toplevel()
@@ -119,15 +119,15 @@ def drawAditionalDataWindow(jobA, jobB, jobC, queueA, queueB, queueC, arrivalJob
     #Create the widgets and add them in a grid to add all the widgets needed in the right places
     #Labels
     tk.Label(aditionalDataWindow,text="Additional Data", font=("Arial", 18), bg='#EAF6F5').grid(row=0, column=0, sticky="W", columnspan=5, padx=10, pady=20)
-    tk.Label(aditionalDataWindow,text="Arrival Time", font=("Arial", 14), bg='#EAF6F5').grid(row=1, column=1, sticky="W", padx=10, pady=10)
+    tk.Label(aditionalDataWindow,text="Start Time", font=("Arial", 14), bg='#EAF6F5').grid(row=1, column=1, sticky="W", padx=10, pady=10)
     tk.Label(aditionalDataWindow,text="Run Time", font=("Arial", 14), bg='#EAF6F5').grid(row=1, column=2, sticky="W", padx=10, pady=10)
     tk.Label(aditionalDataWindow,text="I/O Time", font=("Arial", 14), bg='#EAF6F5').grid(row=1, column=3, sticky="W", padx=10, pady=10)
-    tk.Label(aditionalDataWindow,text="How often start I/O process*", font=("Arial", 10), bg='#EAF6F5').grid(row=1, column=4, sticky="W", padx=10, pady=10)
+    tk.Label(aditionalDataWindow,text="I/O process frequency*", font=("Arial", 10), bg='#EAF6F5').grid(row=1, column=4, sticky="W", padx=10, pady=10)
     tk.Label(aditionalDataWindow,text="Job A:", font=("Arial", 14), bg='#EAF6F5').grid(row=2, column=0, sticky="E", padx=10, pady=10)
     tk.Label(aditionalDataWindow,text="Job B:", font=("Arial", 14), bg='#EAF6F5').grid(row=3, column=0, sticky="E", padx=10, pady=10)
     tk.Label(aditionalDataWindow,text="Job C:", font=("Arial", 14), bg='#EAF6F5').grid(row=4, column=0, sticky="E", padx=10, pady=10)
 
-    tk.Label(aditionalDataWindow,text="This field are additional less the last field, if user fill out the 'I/O time' in a process*", font=("Arial", 12), bg='#EAF6F5', fg="gray").grid(row=6, column=0, sticky="W", padx=200, columnspan=5)
+    tk.Label(aditionalDataWindow,text="*In this field, this value is taking into account if I/O time field has a value", font=("Arial", 12), bg='#EAF6F5', fg="gray").grid(row=6, column=0, sticky="W", padx=200, columnspan=5)
 
     #Inputs or fields
     validation = basicDataWindow.register(sgf.onlyNumbers)
@@ -173,7 +173,7 @@ def drawAditionalDataWindow(jobA, jobB, jobC, queueA, queueB, queueC, arrivalJob
 
 
     #Buttons
-    startButton=tk.Button(aditionalDataWindow, text="START", width=10, height=2, font=("Arial"), command=lambda:eventstartButton(jobA, jobB, jobC, queueA, queueB, queueC, arrivalJobA, arrivalJobB, arrivalJobC, runTimeJobA, runTimeJobB, runTimeJobC, ioJobC, ioJobB, ioJobA, startIoJobC, startIoJobB, startIoJobA, aditionalDataWindow, mainWindow))
+    startButton=tk.Button(aditionalDataWindow, text="START", width=10, height=2, font=("Arial"), command=lambda:eventstartButton(jobA, jobB, jobC, queue, arrivalJobA, arrivalJobB, arrivalJobC, runTimeJobA, runTimeJobB, runTimeJobC, ioJobC, ioJobB, ioJobA, startIoJobC, startIoJobB, startIoJobA, aditionalDataWindow, mainWindow))
     startButton.grid(row=5, column=0, sticky="E", padx=30, pady=20, columnspan=3)
 
     closeButtonAW=tk.Button(aditionalDataWindow, text="CLOSE", width=10, height=2, font=("Arial"), command=lambda:sgf.eventCloseButton(mainWindow))

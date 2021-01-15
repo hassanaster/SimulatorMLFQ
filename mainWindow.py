@@ -31,9 +31,7 @@ def eventOkButton():
     jobC=Job()
 
     #Instance from Queue created
-    queueA=Queue()
-    queueB=Queue()
-    queueC=Queue()
+    queues=Queue()
 
     queue=quantityQueue.get()
     job=quantityJob.get()
@@ -51,16 +49,8 @@ def eventOkButton():
             jobB.setQuantity(job)
         if job==3:
             jobC.setQuantity(job)
-        print(jobA.getQuantity(), jobB.getQuantity(), jobC.getQuantity(), sep=",")
-        #Quantity for the queues created
-        if queue>=1:
-            queueA.setQuantity(queue)
-        if queue>=2:
-            queueB.setQuantity(queue)
-        if queue==3:
-            queueC.setQuantity(queue)
-        #print(queueA.getQuantity(), queueB.getQuantity(), queueC.getQuantity(), sep=",")
-        drawBasicDataWindow(jobA, jobB, jobC, queueA, queueB, queueC, quantumTime, periodTime, mainWindow)
+        #print(jobA.getQuantity(), jobB.getQuantity(), jobC.getQuantity(), sep=",")
+        drawBasicDataWindow(jobA, jobB, jobC, queues, quantumTime, periodTime, mainWindow)
     else:
         mb.showerror(title="Error", message="Numbers admitted for both fields are 1, 2 or 3, please take a look.")
 

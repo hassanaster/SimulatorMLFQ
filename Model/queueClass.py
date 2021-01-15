@@ -19,7 +19,7 @@ class Queue():
         self.__quantum=0
         self.__period=0
         #Result Data - It should be a list of 100 string var
-        self.__result=[]
+        self.__result={}
     
     #Setters
 
@@ -33,7 +33,7 @@ class Queue():
         self.__period=data
 
     def setResult(self, data):
-        self.__result.append(data)
+        self.__result=data
     
     #Getters
     def getQuantity(self):
@@ -45,5 +45,5 @@ class Queue():
     def getPeriod(self):
         return self.__period
     
-    def getResult(self, p):
-        return self.__result[p]
+    def getResult(self):
+        return self.__result

@@ -7,7 +7,7 @@
 # @Authors: Miriam Arango, Luisa Arboleda, Yeison Quinto
 # @Version: Version 1.0
 # @Creation Date: 04 - 01 - 2021
-# @Last modify Date: 13 - 01 - 2021
+# @Last modify Date: 17 - 01 - 2021
 #----------------------------------------------------------------------------------
 
 import tkinter as tk
@@ -32,13 +32,13 @@ def eventFinishButton():
     mb.showinfo(title="Finish Button", message="Estoy en el boton de finish")
 
 #Function for Result button, to display window result
-def eventResultButton(jobA, jobB, jobC, queueA, queueB, queueC, simulationWindow, mainWindow):
+def eventResultButton(jobA, jobB, jobC, queue, simulationWindow, mainWindow):
     #Here we have to make calculations to show the result in the next window
     #We have to draw the same result that we show here in the next window
-    drawResultWindow(jobA, jobB, jobC, queueA, queueB, queueC, simulationWindow, mainWindow)
+    drawResultWindow(jobA, jobB, jobC, queue, simulationWindow, mainWindow)
 
 #Function to draw Simulation Window
-def drawSimulationWindow(jobA, jobB, jobC, queueA, queueB, queueC, aditionalDataWindow, mainWindow):
+def drawSimulationWindow(jobA, jobB, jobC, queue, aditionalDataWindow, mainWindow):
     aditionalDataWindow.withdraw()
     simulationWindow=tk.Toplevel()
     simulationWindow.title("MLFQ Simulation - Simulation Window")
@@ -51,6 +51,7 @@ def drawSimulationWindow(jobA, jobB, jobC, queueA, queueB, queueC, aditionalData
     #Labels
     tk.Label(simulationWindow,text="Simulation MLFQ", font=("Arial", 18), bg='#EAF6F5').grid(row=0, column=0, sticky="W", columnspan=3, padx=10, pady=10)
     tk.Label(simulationWindow,text="Counter(ms):", font=("Arial", 14), bg='#EAF6F5').grid(row=1, column=2, sticky="W", padx=10, pady=10)
+    
     #---In this part of the grid should display the animation and graphic, it will be uploaded once we arrive to this point
     img=tk.PhotoImage(file="mlfq.png")
     tk.Label(simulationWindow,image=img).grid(row=2, column=0, sticky="W", padx=20, pady=10, columnspan=3)
@@ -69,7 +70,7 @@ def drawSimulationWindow(jobA, jobB, jobC, queueA, queueB, queueC, aditionalData
     finishButton=tk.Button(simulationWindow, text="FINISH", width=10, height=2, font=("Arial"), command=lambda:eventFinishButton())
     finishButton.grid(row=3, column=2, padx=10, pady=20)
 
-    resultButton=tk.Button(simulationWindow, text="RESULT", width=10, height=2, font=("Arial"), command=lambda:eventResultButton(jobA, jobB, jobC, queueA, queueB, queueC, simulationWindow, mainWindow))
+    resultButton=tk.Button(simulationWindow, text="RESULT", width=10, height=2, font=("Arial"), command=lambda:eventResultButton(jobA, jobB, jobC, queue, simulationWindow, mainWindow))
     resultButton.grid(row=4, column=0, padx=10, pady=20, columnspan=2)
 
     closeButtonSW=tk.Button(simulationWindow, text="CLOSE", width=10, height=2, font=("Arial"), command=lambda:sgf.eventCloseButton(mainWindow))

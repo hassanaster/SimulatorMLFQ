@@ -17,10 +17,16 @@ class Job():
         #Initial Attributes
         self.__quantity=0
         self.__priority=3
-        self.__arrivalTime=0
+        self.__arrivalTime=0 #This is start time
         self.__runTime=0
         self.__ioTime=0
-        self.__startIoTime=0
+        self.__startIoTime=0 #This is ioFreq
+        self.__allotLeft=0
+        self.__trickLeft=0
+        self.__timeLeft=0
+        self.__doinIo=False
+        self.__firstRun=0
+        self.__endTime=0
         
         #Result Attributes
         self.__jobStatus=2
@@ -55,6 +61,24 @@ class Job():
     def setResponsiveTime(self, data):
         self.__responsiveTime=data
     
+    def setAllotLeft(self, data):
+        self.__allotLeft=data
+
+    def setTrickLeft(self, data):
+        self.__trickLeft=data
+
+    def setTimeLeft(self, data):
+        self.__timeLeft=data
+
+    def setDoinIO(self, data):
+        self.__doinIo=data
+
+    def setFirstRun(self, data):
+        self.__firstRun=data
+
+    def setEndTime(self, data):
+        self.__endTime=data
+
     #Getters
     def getQuantity(self):
         return self.__quantity
@@ -83,11 +107,20 @@ class Job():
     def getResponsiveTime(self):
         return self.__responsiveTime
 
+    def getAllotLeft(self):
+        return self.__allotLeft
+    
+    def getTrickLeft(self):
+        return self.__trickLeft
+    
+    def getTimeLeft(self):
+        return self.__timeLeft
 
-"""Create an object
+    def getDoinIo(self):
+        return self.__doinIo
 
-jobA=Job()
-jobA.priority
+    def getFirstRun(self):
+        return self.__firstRun
 
-para poder referirse a un atributo dentro de un metodo 
-self.arrivalTime=8"""
+    def getEndTime(self):
+        return self.__endTime
