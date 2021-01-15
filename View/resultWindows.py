@@ -25,7 +25,7 @@ def drawResultWindow(jobA, jobB, jobC, queue, simulationWindow, mainWindow):
     resultWindow.resizable(False,False)
     resultWindow.iconbitmap("/icon.ico")
     resultWindow.config(bg='#EAF6F5')
-    resultWindow.geometry('560x690+500+100')
+    resultWindow.geometry('640x700+500+100')
 
     #Create the widgets and add them in a grid to add all the widgets needed in the right places
     #Labels
