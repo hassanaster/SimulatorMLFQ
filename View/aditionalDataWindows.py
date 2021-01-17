@@ -110,7 +110,6 @@ def drawAditionalDataWindow(jobA, jobB, jobC, queueQuantity, quantum, period, ar
     aditionalDataWindow=tk.Toplevel()
     aditionalDataWindow.title("MLFQ Simulation - Aditional Data Window")
     aditionalDataWindow.resizable(False,False)
-    aditionalDataWindow.iconbitmap("/icon.ico")
     aditionalDataWindow.config(bg='#EAF6F5')
     aditionalDataWindow.geometry('800x400+500+150')
 

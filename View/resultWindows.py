@@ -20,12 +20,11 @@ import sys
 # Functions to create the events for each button
 #----------------------------------------------------------------------------------
 
-def drawResultWindow(jobA, jobB, jobC, simulationWindow, mainWindow, result, avgResponse, avgTurnAroundTime):
+def drawResultWindow(jobA, jobB, jobC, simulationWindow, mainWindow, timeList, jobList, queueList, avgResponse, avgTurnAround):
     simulationWindow.withdraw()
     resultWindow=tk.Toplevel()
     resultWindow.title("MLFQ Simulation - Result Window")
     resultWindow.resizable(False,False)
-    resultWindow.iconbitmap("/icon.ico")
     resultWindow.config(bg='#EAF6F5')
     resultWindow.geometry('640x700+500+100')
 
@@ -49,9 +48,9 @@ def drawResultWindow(jobA, jobB, jobC, simulationWindow, mainWindow, result, avg
     textResults=tk.Text(resultWindow, font=("Arial", 14), fg="gray", width=75, height=16, bg='#EAF6F5', cursor="arrow", highlightcolor='#EAF6F5')
     textResults.grid(row=2, column=0, pady=10, padx=10, columnspan=4)
     
-    for data in result:
-        textResults.insert("insert", data)
-        textResults.insert("insert", "\n")
+    file=open("../Simulator MFLQ/Controller/ejecucion.txt","r")
+    textResults.insert("insert", file.read())
+    file.close()
     
 
     #Scroll bar
@@ -101,7 +100,7 @@ def drawResultWindow(jobA, jobB, jobC, simulationWindow, mainWindow, result, avg
     #Average
     aroundAverage=tk.Entry(resultWindow, font=("Arial"), fg="gray", width=10, justify="center", cursor="arrow")
     aroundAverage.grid(row=8, column=2, padx=10, pady=10)
-    aroundAverage.insert(0, round(avgTurnAroundTime,2))
+    aroundAverage.insert(0, round(avgTurnAround,2))
 
     responsiveAverage=tk.Entry(resultWindow, font=("Arial"), fg="gray", width=10, justify="center", cursor="arrow")
     responsiveAverage.grid(row=8, column=3, padx=10, pady=10)

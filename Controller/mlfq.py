@@ -6,10 +6,9 @@
 # @Authors: Miriam Arango, Luisa Arboleda, Yeison Quinto
 # @Version: Version 1.0
 # @Date: 15 - 01 - 2021
-# @Last modify Date: 18 - 01 - 2021
+# @Last modify Date: 16 - 01 - 2021
 #----------------------------------------------------------------------------------
 from Model.JobClass import *
-#from Model.queueClass import *
 import sys
 from optparse import OptionParser
 import re
@@ -21,21 +20,21 @@ class mlfq():
         #Initial Attributes
         self.__numQueues=0
         self.__quantum=0        #allotment has the same value
-        #self.__allotment=0
+        self.__allotment=1
         self.__quantumList={}
         self.__allotmentList={}
         self.__numJobs=0
         self.__maxlen=100       #max run-time of a job
-        self.__maxio=0          #max I/O frequency of a job 
+        self.__maxio=10        #max I/O frequency of a job 
         self.__S=0              #how often to boost the priority of all jobs back to high priority
-        self.__iotime=0         #how long an I/O should last
+        self.__iotime=5       #how long an I/O should last
         self.__stay=False       #reset and stay at same priority level when issuing I/O
         self.__iobump=False     #if specified, jobs that finished I/O move immediately to front of current queue       
         self.__joblist={}
         self.__hiQueue=0
         self.__ioDone={}
-        #self.__file=open("Controller\ejecucion.txt","r+")
-        self.__results=[]
+        self.__file=open("Controller/ejecucion.txt","r+")
+        #Added 17-01-2021
         self.__avgTurnAround=0.0
         self.__avgResponseTime=0.0
     
@@ -65,14 +64,14 @@ class mlfq():
 
     def setAllotmentList(self):
         for i in range(self.__numQueues):
-            self.__allotmentList[i] = int(self.__quantum)
+            self.__allotmentList[i] = int(self.__allotment)
     
     def setHiQueue(self):
         self.__hiQueue=self.__numQueues - 1
 
     def setJobList(self,joblist):
         self.__numJobs=joblist[0].getQuantity()
-        for i in joblist:
+        for i in range(self.__numJobs):
             self.__joblist[i]=joblist[i]
     
     def setBoost(self,s):
@@ -90,19 +89,25 @@ class mlfq():
     def setAllJob(self):
         for i in range(self.__numJobs):
             self.__joblist[i].setTimeLeft(self.__joblist[i].getRunTime())
-            self.__joblist[i].setTrickLeft(self.__quantumList[self.__joblist[i].getPriority()])
-            self.__joblist[i].setAllotLeft(self.__allotmentList[self.__joblist[i].getPriority()])
+            self.__joblist[i].setTrickLeft(self.__quantumList[self.__hiQueue])
+            self.__joblist[i].setAllotLeft(self.__allotmentList[self.__hiQueue])
     
-    def getResults(self):
-        return self.__results
-
+    def setAllPriors(self):
+        for i in range(self.__numJobs):
+            if self.__joblist[i].getPriority()==3:
+                self.__joblist[i].setPriority(self.__hiQueue)
+            elif self.__joblist[i].getPriority()==2 and self.__hiQueue>0:
+                self.__joblist[i].setPriority(self.__hiQueue-1)
+            else:
+                self.__joblist[i].setPriority(0)
+    
+    #Added 17-01-2021
     def getResponseTimeAvg(self):
         return self.__avgResponseTime
 
     def getTurnAroundAvg(self):
         return self.__avgTurnAround
-    
-    #Function MLFQ 
+
     def RunMLFQ(self,joblist,numQueue,boost,quantumm):
 
         # initialize the MLFQ atributtes
@@ -115,7 +120,8 @@ class mlfq():
         self.setBoost(boost)
         self.setioDone()
         self.setAllJob()
-        #self.__file.truncate(0)
+        self.setAllPriors()
+        self.__file.truncate(0)
 
         # initialize the MLFQ queues
         queue = {}
@@ -130,7 +136,7 @@ class mlfq():
         finishedJobs = 0
 
     
-        #nosirve=self.__file.write('\nExecution Trace:\n')
+        nosirve=self.__file.write('\nExecution Trace:\n')
 
         while finishedJobs < totalJobs:
             # find highest priority job
@@ -141,8 +147,7 @@ class mlfq():
             # check for priority boost
             if self.__S > 0 and currTime != 0:
                 if currTime % self.__S == 0:
-                    #nosirve=self.__file.write('[ time %d ] BOOST ( every %d )\n' % (currTime, self.__s))
-                    self.__results.append('[ time %d ms] BOOST ( every %d )' % (currTime, self.__S))
+                    nosirve=self.__file.write('[ time %d ] BOOST ( every %d )\n' % (currTime, self.__S))
                     # remove all jobs from queues (except high queue) and put them in high queue
                     for q in range(self.__numQueues-1):
                         for j in queue[q]:
@@ -166,8 +171,7 @@ class mlfq():
                 for (j, type) in self.__ioDone[currTime]:
                     q = self.__joblist[j].getPriority()
                     self.__joblist[j].setDoinIO(False)
-                    #nosirve=self.__file.write('[ time %d ] %s by JOB %d\n' % (currTime, type, j))
-                    self.__results.append('[ time %d ms] %s by JOB %d' % (currTime, type, j))
+                    nosirve=self.__file.write('[ time %d ] %s by JOB %d\n' % (currTime, type, j))
                     if self.__iobump == False or type == 'JOB BEGINS':
                         queue[q].append(j)
                     else:
@@ -176,8 +180,7 @@ class mlfq():
             # now find the highest priority job
             currQueue = self.findQueue(queue)
             if currQueue == -1:
-                #nosirve=self.__file.write('[ time %d ] IDLE\n' % (currTime))
-                __resuls.append('[ time %d ] IDLE' % (currTime))
+                nosirve=self.__file.write('[ time %d ] IDLE\n' % (currTime))
                 currTime += 1
                 continue
 
@@ -200,11 +203,9 @@ class mlfq():
             allotLeft = self.__joblist[currJob].getAllotLeft()
             timeLeft  = self.__joblist[currJob].getTimeLeft()
 
-            """   nosirve=self.__file.write( '[ time %d ] Run JOB %d at PRIORITY %d [ TICKS %d ALLOT %d TIME %d (of %d) ]\n' % \
+            nosirve=self.__file.write( '[ time %d ] Run JOB %d at PRIORITY %d [ TICKS %d ALLOT %d TIME %d (of %d) ]\n' % \
                 (currTime, currJob, currQueue, ticksLeft, allotLeft, timeLeft, runTime)
-            )"""
-            self.__results.append('[ time %d ms] Run JOB %d at PRIORITY %d [ TICKS %d ALLOT %d TIME %d (of %d) ]' % \
-                (currTime, currJob, currQueue, ticksLeft, allotLeft, timeLeft, runTime))
+        )
             if timeLeft < 0:
                 self.Abort('Error: should never have less than 0 time left to run')
 
@@ -213,8 +214,7 @@ class mlfq():
 
             # CHECK FOR JOB ENDING
             if timeLeft == 0:
-                #nosirve=self.__file.write( '[ time %d ] FINISHED JOB %d\n' % (currTime, currJob))
-                self.__results.append('[ time %d ms] FINISHED JOB %d\n' % (currTime, currJob))
+                nosirve=self.__file.write( '[ time %d ] FINISHED JOB %d\n' % (currTime, currJob))
                 finishedJobs += 1
                 self.__joblist[currJob].setEndTime(currTime)
                 # print 'BEFORE POP', queue
@@ -227,8 +227,7 @@ class mlfq():
             issuedIO = False
             if ioFreq > 0 and (((runTime - timeLeft) % ioFreq) == 0):
                 # time for an IO!
-                #nosirve=self.__file.write('[ time %d ] IO_START by JOB %d\n' % (currTime, currJob))
-                self.__results.append('[ time %d ms] IO_START by JOB %d' % (currTime, currJob))
+                nosirve=self.__file.write('[ time %d ] IO_START by JOB %d\n' % (currTime, currJob))
                 issuedIO = True
                 desched = queue[currQueue].pop(0)
                 assert(desched == currJob)
@@ -238,11 +237,11 @@ class mlfq():
                     self.__joblist[currJob].setTrickLeft(self.__quantumList[currQueue])
                     self.__joblist[currJob].setAllotmentLeft(self.__allotmentList[currQueue])
                 # add to IO Queue: but which queue?
-                futureTime = currTime + self.__ioTime
-                #if futureTime not in ioDone:
-                 #   ioDone[futureTime] = []
-                #print ('IO DONE')
-                #ioDone[futureTime].append((currJob, 'IO_DONE'))
+                futureTime = currTime + self.__iotime
+                if futureTime not in self.__ioDone:
+                    self.__ioDone[futureTime] = []
+                nosirve=self.__file.write('IO DONE\n')
+                self.__ioDone[futureTime].append((currJob, 'IO_DONE'))
 
             # CHECK FOR QUANTUM ENDING AT THIS LEVEL (BUT REMEMBER, THERE STILL MAY BE ALLOTMENT LEFT)
             if ticksLeft == 0:
@@ -272,8 +271,9 @@ class mlfq():
                     self.__joblist[currJob].setTrickLeft(self.__quantumList[currQueue])
                     if issuedIO == False:
                         queue[currQueue].append(currJob)
-        #self.__file.close()
+        self.__file.close()
 
+    #Added 17-01-2021 - some updates
     def statistics(self):
         print( '')
         print( 'Final statistics:')
@@ -290,36 +290,22 @@ class mlfq():
             turnaroundSum += turnaround
         self.__avgResponseTime = (responseSum)/self.__numJobs
         self.__avgTurnAround = (turnaroundSum)/self.__numJobs
+
         print( '\n  Avg %2d: startTime n/a - response %.2f - turnaround %.2f' % (i, 
                                                                                 float(responseSum)/self.__numJobs,
                                                                                 float(turnaroundSum)/self.__numJobs))
 
         print ('\n')
         
-
+    
     def infGrafica(self,tiempo,trabajo,prioridad): #recibe como parametros las listas vacias y estas se llenan con la información lista para usar
-        archivo=open("Controller\ejecucion.txt","r+")
+        archivo=open("Controller/ejecucion.txt","r+")
         texto=archivo.read()
         archivo.close()
         filtro1=re.findall("\d+\s]\sRun\sJOB\s\d\sat\s\w+\s\d",texto)
         numero=[]
         for i in filtro1:
             numero.append(re.findall("\d+",i))
-        for i in numero:
-            tiempo.append(int(i[0]))
-            trabajo.append(int(i[1]))
-            prioridad.append(int(i[2]))
-
-    def infGraficaList(self,tiempo,trabajo,prioridad): #recibe como parametros las listas vacias y estas se llenan con la información lista para usar
-        print("Entre a infGraficaList")
-        numero=[]
-        for data in self.__results:
-            print("Entre al primer for, valor de data: ", data)
-            filtro1=re.findall("\d+\s]\sRun\sJOB\s\d\sat\s\w+\s\d", data)
-            print("filtro 1", filtro1)
-            for i in filtro1:
-                numero.append(re.findall("\d+",i))
-                print("variable numero", numero[i])
         for i in numero:
             tiempo.append(int(i[0]))
             trabajo.append(int(i[1]))

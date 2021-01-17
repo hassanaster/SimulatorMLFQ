@@ -29,23 +29,22 @@ def eventOkBWButton(jobA, jobB, jobC, queueQuantity, quantumTime, periodTime, jo
     priorityB=jobBComboBox.current()
     priorityC=jobCComboBox.current()
     aditionalW=jobTwoOptionsComboBox.current()
+    if quantum=="0" or period=="" or quantum=="":
+        mb.showinfo(title="Info", message="If there is some fields empty (quantum or period 'S') it will be replaced quantum = 1, S=0.")
     if (quantum==""):
-        quantum="0"
+        quantum="1"
     if (period==""):
         period="0"
-    if((int(quantum)==0) and (int(period)==0)):
-        mb.showerror(title="Error", message="Data typed for quantum and period field are invalid, please verify.")
+    quantum=(int(quantum))
+    period=(int(period))
+    jobA.setPriority(priorityA+1)
+    jobB.setPriority(priorityB+1)
+    jobC.setPriority(priorityC+1)
+    #print("Las prioridades del job", jobA.getPriority(), jobB.getPriority(),jobC.getPriority(), sep=",")
+    if aditionalW == 1:
+        drawSimulationWindow(jobA, jobB, jobC, queueQuantity, quantum, period, basicDataWindow, mainWindow)
     else:
-        quantum=(int(quantum))
-        period=(int(period))
-        jobA.setPriority(priorityA)
-        jobB.setPriority(priorityB)
-        jobC.setPriority(priorityC)
-        #print("Las prioridades del job", jobA.getPriority(), jobB.getPriority(),jobC.getPriority(), sep=",")
-        if aditionalW == 1:
-            drawSimulationWindow(jobA, jobB, jobC, queueQuantity, quantum, period, basicDataWindow, mainWindow)
-        else:
-            drawAditionalDataWindow(jobA, jobB, jobC, queueQuantity, quantum, period, arrivalJobA, arrivalJobB, arrivalJobC, runTimeJobA, runTimeJobB, runTimeJobC, ioJobC, ioJobB, ioJobA, startIoJobC, startIoJobB, startIoJobA, basicDataWindow, mainWindow)
+        drawAditionalDataWindow(jobA, jobB, jobC, queueQuantity, quantum, period, arrivalJobA, arrivalJobB, arrivalJobC, runTimeJobA, runTimeJobB, runTimeJobC, ioJobC, ioJobB, ioJobA, startIoJobC, startIoJobB, startIoJobA, basicDataWindow, mainWindow)
         
 #Disable combox JobB when user just chose 1 job to run
 def disbledEnabledComboBoxB(quantity):
@@ -66,7 +65,6 @@ def drawBasicDataWindow(jobA, jobB, jobC, queueQuantity, quantumTime, periodTime
     basicDataWindow=tk.Toplevel()
     basicDataWindow.title("MLFQ Simulation - Basic Data Window")
     basicDataWindow.resizable(False,False)
-    basicDataWindow.iconbitmap("icon.ico")
     basicDataWindow.config(bg='#EAF6F5')
     basicDataWindow.geometry('400x500+500+150')
 

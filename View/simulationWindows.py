@@ -16,13 +16,15 @@ import View.shareGraphicFunctions as sgf
 from View.resultWindows import *
 from Controller.mlfq import *
 
-result=[]
-avgResponse=0.0
-avgTurnAroundTime=0.0
-
 #----------------------------------------------------------------------------------
 # Functions to create the events for each button
 #----------------------------------------------------------------------------------
+timeList=[]
+jobList=[]
+queueList=[]
+
+avgResponse=0.0
+avgTurnAroundTime=0.0
 
 #Function for Pause the simulation
 def eventPauseButton():
@@ -30,24 +32,21 @@ def eventPauseButton():
         
 #Function for Start the simulation after pause, or since the begining
 def eventStartButtonSW(jobA, jobB, jobC, queueQuantity, quantum, period):
-    global result
-    global avgResponse
     global avgTurnAroundTime
+    global avgResponse
 
     #Taking Data
     #---This is just for now because this is additional data recover in the aditional windows
-    jobA.setRunTime(30)
-    jobB.setRunTime(20)
-    jobC.setRunTime(50)
+    #jobA.setRunTime(30)
+    #jobB.setRunTime(20)
+    #jobC.setRunTime(50)
 
     #Create a JobList to execute the scheduler and the list to draw the graphic
-    joblist={}
-    joblist[0]=jobA
-    joblist[1]=jobB
-    joblist[2]=jobC
-    timeList=[]
-    jobList=[]
-    queueList=[]
+    joblist=[]
+    joblist.append(jobA)
+    joblist.append(jobB)
+    joblist.append(jobC)
+    print(joblist[0].getQuantity(), sep=",")
     
     #print("Cantidad de colas: ", queueQuantity, "Periodo S: ", period, "Quantum: ", quantum, sep=',')
     
@@ -57,12 +56,9 @@ def eventStartButtonSW(jobA, jobB, jobC, queueQuantity, quantum, period):
 
     #Create the file to capture the result
     scheduler.statistics()
-    avgResponse=scheduler.getResponseTimeAvg()
+    scheduler.infGrafica(timeList, jobList, queueList)
     avgTurnAroundTime=scheduler.getTurnAroundAvg()
-    scheduler.infGraficaList(timeList, jobList, queueList)
-    print(timeList[:])
-    #scheduler.infGrafica(timeList, jobList, queueList)
-    result=scheduler.getResults()
+    avgResponse=scheduler.getResponseTimeAvg()
 
     #---After results we have to call the function wich draw the simulation with the pause, and finish button 
 
@@ -74,10 +70,9 @@ def eventFinishButton():
 
 #Function for Result button, to display window result
 def eventResultButton(jobA, jobB, jobC, simulationWindow, mainWindow):
-    global result
     global avgResponse
     global avgTurnAroundTime
-    drawResultWindow(jobA, jobB, jobC, simulationWindow, mainWindow, result, avgResponse, avgTurnAroundTime)
+    drawResultWindow(jobA, jobB, jobC, simulationWindow, mainWindow, timeList, jobList, queueList, avgResponse, avgTurnAroundTime)
 
 #Function to draw Simulation Window
 def drawSimulationWindow(jobA, jobB, jobC, queueQuantity, quantum, period, aditionalDataWindow, mainWindow):
@@ -85,7 +80,6 @@ def drawSimulationWindow(jobA, jobB, jobC, queueQuantity, quantum, period, aditi
     simulationWindow=tk.Toplevel()
     simulationWindow.title("MLFQ Simulation - Simulation Window")
     simulationWindow.resizable(False,False)
-    simulationWindow.iconbitmap("icon.ico")
     simulationWindow.config(bg='#EAF6F5')
     simulationWindow.geometry('490x450+500+250')
 

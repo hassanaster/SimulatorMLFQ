@@ -16,16 +16,16 @@ class Job():
 
         #Initial Attributes
         self.__quantity=0
-        self.__priority=2
+        self.__priority=3
         self.__arrivalTime=0 #This is start time
-        self.__runTime=0
+        self.__runTime=100
         self.__ioTime=0
         self.__startIoTime=0 #This is ioFreq
         self.__allotLeft=0
         self.__trickLeft=0
         self.__timeLeft=0
         self.__doinIo=False
-        self.__firstRun=0
+        self.__firstRun=-1
         self.__endTime=0
         
         #Result Attributes
