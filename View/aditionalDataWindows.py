@@ -170,7 +170,7 @@ def drawAditionalDataWindow(jobA, jobB, jobC, queueQuantity, quantum, period, ar
 
 
     #Buttons
-    startButton=tk.Button(aditionalDataWindow, text="START", width=10, height=2, font=("Arial"), command=lambda:eventstartButton(jobA, jobB, jobC, queueQuantity, quantum, period, arrivalJobA, arrivalJobB, arrivalJobC, runTimeJobA, runTimeJobB, runTimeJobC, ioJobC, ioJobB, ioJobA, startIoJobC, startIoJobB, startIoJobA, aditionalDataWindow, mainWindow))
+    startButton=tk.Button(aditionalDataWindow, text="OK", width=10, height=2, font=("Arial"), command=lambda:eventstartButton(jobA, jobB, jobC, queueQuantity, quantum, period, arrivalJobA, arrivalJobB, arrivalJobC, runTimeJobA, runTimeJobB, runTimeJobC, ioJobC, ioJobB, ioJobA, startIoJobC, startIoJobB, startIoJobA, aditionalDataWindow, mainWindow))
     startButton.grid(row=5, column=0, sticky="E", padx=30, pady=20, columnspan=3)
 
     closeButtonAW=tk.Button(aditionalDataWindow, text="CLOSE", width=10, height=2, font=("Arial"), command=lambda:sgf.eventCloseButton(mainWindow))
