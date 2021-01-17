@@ -16,7 +16,7 @@ class Job():
 
         #Initial Attributes
         self.__quantity=0
-        self.__priority=3
+        self.__priority=2
         self.__arrivalTime=0 #This is start time
         self.__runTime=0
         self.__ioTime=0

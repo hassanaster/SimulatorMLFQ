@@ -22,7 +22,7 @@ from View.aditionalDataWindows import *
 #----------------------------------------------------------------------------------
 
 #Event for OK button on click - Aditional data window or simulation window will be open
-def eventOkBWButton(jobA, jobB, jobC, queue, quantumTime, periodTime, jobAComboBox, jobBComboBox, jobCComboBox, jobTwoOptionsComboBox, arrivalJobA, arrivalJobB, arrivalJobC, runTimeJobA, runTimeJobB, runTimeJobC, ioJobC, ioJobB, ioJobA, startIoJobC, startIoJobB, startIoJobA, basicDataWindow, mainWindow):
+def eventOkBWButton(jobA, jobB, jobC, queueQuantity, quantumTime, periodTime, jobAComboBox, jobBComboBox, jobCComboBox, jobTwoOptionsComboBox, arrivalJobA, arrivalJobB, arrivalJobC, runTimeJobA, runTimeJobB, runTimeJobC, ioJobC, ioJobB, ioJobA, startIoJobC, startIoJobB, startIoJobA, basicDataWindow, mainWindow):
     quantum=quantumTime.get()
     period=periodTime.get()
     priorityA=jobAComboBox.current()
@@ -36,16 +36,16 @@ def eventOkBWButton(jobA, jobB, jobC, queue, quantumTime, periodTime, jobAComboB
     if((int(quantum)==0) and (int(period)==0)):
         mb.showerror(title="Error", message="Data typed for quantum and period field are invalid, please verify.")
     else:
-        queue.setQuantum(int(quantum))
-        queue.setPeriod(int(period))
+        quantum=(int(quantum))
+        period=(int(period))
         jobA.setPriority(priorityA)
         jobB.setPriority(priorityB)
         jobC.setPriority(priorityC)
-        #print(queueA.getQuantum(),queueB.getQuantum(), queueC.getQuantum(),  queueA.getPeriod(), queueB.getPeriod(), queueC.getPeriod(), jobA.getPriority(), jobB.getPriority(), jobC.getPriority(), sep=",")
+        #print("Las prioridades del job", jobA.getPriority(), jobB.getPriority(),jobC.getPriority(), sep=",")
         if aditionalW == 1:
-            drawSimulationWindow(jobA, jobB, jobC, queue, basicDataWindow, mainWindow)
+            drawSimulationWindow(jobA, jobB, jobC, queueQuantity, quantum, period, basicDataWindow, mainWindow)
         else:
-            drawAditionalDataWindow(jobA, jobB, jobC, queue, arrivalJobA, arrivalJobB, arrivalJobC, runTimeJobA, runTimeJobB, runTimeJobC, ioJobC, ioJobB, ioJobA, startIoJobC, startIoJobB, startIoJobA, basicDataWindow, mainWindow)
+            drawAditionalDataWindow(jobA, jobB, jobC, queueQuantity, quantum, period, arrivalJobA, arrivalJobB, arrivalJobC, runTimeJobA, runTimeJobB, runTimeJobC, ioJobC, ioJobB, ioJobA, startIoJobC, startIoJobB, startIoJobA, basicDataWindow, mainWindow)
         
 #Disable combox JobB when user just chose 1 job to run
 def disbledEnabledComboBoxB(quantity):
@@ -60,7 +60,7 @@ def disbledEnabledComboBoxC(quantity):
     return "readonly"
 
 #Function wich draw the window for the basic data
-def drawBasicDataWindow(jobA, jobB, jobC, queue, quantumTime, periodTime, mainWindow):
+def drawBasicDataWindow(jobA, jobB, jobC, queueQuantity, quantumTime, periodTime, mainWindow):
     mainWindow.withdraw()
     #Function basicWindowWithdraw
     basicDataWindow=tk.Toplevel()
@@ -111,22 +111,22 @@ def drawBasicDataWindow(jobA, jobB, jobC, queue, quantumTime, periodTime, mainWi
     periodField.grid(row=7, column=1, sticky="W", padx=20, pady=10)
 
     #ComboBox
-    options=["High", "Medium", "Low"]
+    options=["Low", "Medium", "High"]
     twoOptions=["Yes", "No"]
     jobAComboBox=cb.Combobox(basicDataWindow, width=14, state="readonly")
     jobAComboBox.grid(row=2, column=1, sticky="W", padx=20, pady=10)
     jobAComboBox['values']=options
-    jobAComboBox.current(newindex=0)
+    jobAComboBox.current(newindex=2)
 
     jobBComboBox=cb.Combobox(basicDataWindow, width=14, state=disbledEnabledComboBoxB(jobA.getQuantity()))
     jobBComboBox.grid(row=3, column=1, sticky="W", padx=20, pady=10)
     jobBComboBox['values']=options
-    jobBComboBox.current(newindex=0)
+    jobBComboBox.current(newindex=2)
 
     jobCComboBox=cb.Combobox(basicDataWindow, width=14, state=disbledEnabledComboBoxC(jobA.getQuantity()))
     jobCComboBox.grid(row=4, column=1, sticky="W", padx=20, pady=10)
     jobCComboBox['values']=options
-    jobCComboBox.current(newindex=0)
+    jobCComboBox.current(newindex=2)
 
     jobTwoOptionsComboBox=cb.Combobox(basicDataWindow, width=14, state="readonly")
     jobTwoOptionsComboBox.grid(row=8, column=1, sticky="W", padx=20, pady=10, rowspan=2)
@@ -134,7 +134,7 @@ def drawBasicDataWindow(jobA, jobB, jobC, queue, quantumTime, periodTime, mainWi
     jobTwoOptionsComboBox.current(newindex=1)
     
     #Buttons
-    okButtonBW=tk.Button(basicDataWindow, text="OK", width=10, height=2, font=("Arial"), command=lambda:eventOkBWButton(jobA, jobB, jobC, queue, quantumTime, periodTime, jobAComboBox, jobBComboBox, jobCComboBox, jobTwoOptionsComboBox, arrivalJobA, arrivalJobB, arrivalJobC, runTimeJobA, runTimeJobB, runTimeJobC, ioJobC, ioJobB, ioJobA, startIoJobC, startIoJobB, startIoJobA, basicDataWindow, mainWindow))
+    okButtonBW=tk.Button(basicDataWindow, text="OK", width=10, height=2, font=("Arial"), command=lambda:eventOkBWButton(jobA, jobB, jobC, queueQuantity, quantumTime, periodTime, jobAComboBox, jobBComboBox, jobCComboBox, jobTwoOptionsComboBox, arrivalJobA, arrivalJobB, arrivalJobC, runTimeJobA, runTimeJobB, runTimeJobC, ioJobC, ioJobB, ioJobA, startIoJobC, startIoJobB, startIoJobA, basicDataWindow, mainWindow))
     okButtonBW.grid(row=10, column=0, sticky="E", padx=10, pady=20)
 
     cancelButtonBW=tk.Button(basicDataWindow, text="CLOSE", width=10, height=2, font=("Arial"), command=lambda:sgf.eventCloseButton(mainWindow))

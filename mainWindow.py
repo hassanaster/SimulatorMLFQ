@@ -17,7 +17,6 @@ import View.shareGraphicFunctions as sgf
 import tkinter.ttk as cb
 from View.basicDataWindow import *
 from Model.JobClass import *
-from Model.queueClass import *
 
 #----------------------------------------------------------------------------------
 # Functions to create the events for each button
@@ -29,9 +28,6 @@ def eventOkButton():
     jobA=Job()
     jobB=Job()
     jobC=Job()
-
-    #Instance from Queue created
-    queues=Queue()
 
     queue=quantityQueue.get()
     job=quantityJob.get()
@@ -50,7 +46,7 @@ def eventOkButton():
         if job==3:
             jobC.setQuantity(job)
         #print(jobA.getQuantity(), jobB.getQuantity(), jobC.getQuantity(), sep=",")
-        drawBasicDataWindow(jobA, jobB, jobC, queues, quantumTime, periodTime, mainWindow)
+        drawBasicDataWindow(jobA, jobB, jobC, queue, quantumTime, periodTime, mainWindow)
     else:
         mb.showerror(title="Error", message="Numbers admitted for both fields are 1, 2 or 3, please take a look.")
 

@@ -20,7 +20,7 @@ from View.simulationWindows import *
 #----------------------------------------------------------------------------------
 
 #Event for Start button on click
-def eventstartButton(jobA, jobB, jobC, queue, arrivalJobAField, arrivalJobBField, arrivalJobCField, runTimeJobAField, runTimeJobBField, runTimeJobCField, ioJobCField, ioJobBField, ioJobAField, startIoJobCField, startIoJobBField, startIoJobAField, aditionalDataWindow, mainWindow):
+def eventstartButton(jobA, jobB, jobC, queueQuantity, quantum, period, arrivalJobAField, arrivalJobBField, arrivalJobCField, runTimeJobAField, runTimeJobBField, runTimeJobCField, ioJobCField, ioJobBField, ioJobAField, startIoJobCField, startIoJobBField, startIoJobAField, aditionalDataWindow, mainWindow):
     #Setting the data for JobA
     if jobA.getQuantity()>=1:
         
@@ -89,24 +89,22 @@ def eventstartButton(jobA, jobB, jobC, queue, arrivalJobAField, arrivalJobBField
             jobC.setStartIoTime(0)
         else:
             jobC.setStartIoTime(int(startIoJobCField.get()))
-
-    #print(jobA.getArrivalTime(), jobA.getRunTime(), jobA.getIoTime(), jobA.getStartIoTime(), jobB.getArrivalTime(), jobB.getRunTime(), jobB.getIoTime(), jobB.getStartIoTime(), jobB.getArrivalTime(), jobC.getRunTime(), jobC.getIoTime(), jobC.getStartIoTime(), sep=",")
-    drawSimulationWindow(jobA, jobB, jobC, queue, aditionalDataWindow, mainWindow)
+    drawSimulationWindow(jobA, jobB, jobC, queueQuantity, quantum, period, aditionalDataWindow, mainWindow)
         
-#Disable Fields JobB when user just chose 1 job to run
+#Disable Fields JobB when user just chose 1 job to run - combobox JobB
 def disbledEnabledFieldsB(quantity):
     if quantity == 1:
         return "disabled"
     return "normal"
 
-#Disable Field JobC when user just chose max 2 jobs to run
+#Disable Field JobC when user just chose max 2 jobs to run - combox JobC
 def disbledEnabledFieldsC(quantity):
     if quantity == 1 or quantity == 2:
         return "disabled"
     return "normal"
 
 #Function wich draw the window for aditional Data
-def drawAditionalDataWindow(jobA, jobB, jobC, queue, arrivalJobA, arrivalJobB, arrivalJobC, runTimeJobA, runTimeJobB, runTimeJobC, ioJobC, ioJobB, ioJobA, startIoJobC, startIoJobB, startIoJobA, basicDataWindow, mainWindow):
+def drawAditionalDataWindow(jobA, jobB, jobC, queueQuantity, quantum, period, arrivalJobA, arrivalJobB, arrivalJobC, runTimeJobA, runTimeJobB, runTimeJobC, ioJobC, ioJobB, ioJobA, startIoJobC, startIoJobB, startIoJobA, basicDataWindow, mainWindow):
     basicDataWindow.withdraw()
     #Window or root: First we should create the root or window
     aditionalDataWindow=tk.Toplevel()
@@ -173,7 +171,7 @@ def drawAditionalDataWindow(jobA, jobB, jobC, queue, arrivalJobA, arrivalJobB, a
 
 
     #Buttons
-    startButton=tk.Button(aditionalDataWindow, text="START", width=10, height=2, font=("Arial"), command=lambda:eventstartButton(jobA, jobB, jobC, queue, arrivalJobA, arrivalJobB, arrivalJobC, runTimeJobA, runTimeJobB, runTimeJobC, ioJobC, ioJobB, ioJobA, startIoJobC, startIoJobB, startIoJobA, aditionalDataWindow, mainWindow))
+    startButton=tk.Button(aditionalDataWindow, text="START", width=10, height=2, font=("Arial"), command=lambda:eventstartButton(jobA, jobB, jobC, queueQuantity, quantum, period, arrivalJobA, arrivalJobB, arrivalJobC, runTimeJobA, runTimeJobB, runTimeJobC, ioJobC, ioJobB, ioJobA, startIoJobC, startIoJobB, startIoJobA, aditionalDataWindow, mainWindow))
     startButton.grid(row=5, column=0, sticky="E", padx=30, pady=20, columnspan=3)
 
     closeButtonAW=tk.Button(aditionalDataWindow, text="CLOSE", width=10, height=2, font=("Arial"), command=lambda:sgf.eventCloseButton(mainWindow))
