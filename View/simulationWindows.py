@@ -185,7 +185,7 @@ def drawSimulationWindow(jobA, jobB, jobC, queueQuantity, quantum, period, aditi
     finishButton=tk.Button(simulationWindow, text="FINISH", width=10, height=2, font=("Arial"), command=lambda:eventFinishButton())
     finishButton.grid(row=11, column=56, pady=20, columnspan=10)
 
-    resultButton=tk.Button(simulationWindow, text="RESULT", width=10, height=2, font=("Arial"), command=lambda:eventResultButton())
+    resultButton=tk.Button(simulationWindow, text="RESULT", width=10, height=2, font=("Arial"), command=lambda:eventResultButton(jobA, jobB, jobC, simulationWindow, mainWindow))
     resultButton.grid(row=12, column=40, pady=20, columnspan=10)
 
     closeButtonSW=tk.Button(simulationWindow, text="CLOSE", width=10, height=2, font=("Arial"), command=lambda:sgf.eventCloseButton(mainWindow))
