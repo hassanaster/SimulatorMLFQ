@@ -129,7 +129,7 @@ def drawBasicDataWindow(jobA, jobB, jobC, queueQuantity, quantumTime, periodTime
     jobTwoOptionsComboBox=cb.Combobox(basicDataWindow, width=14, state="readonly")
     jobTwoOptionsComboBox.grid(row=8, column=1, sticky="W", padx=20, pady=10, rowspan=2)
     jobTwoOptionsComboBox['values']=twoOptions
-    jobTwoOptionsComboBox.current(newindex=1)
+    jobTwoOptionsComboBox.current(newindex=0)
     
     #Buttons
     okButtonBW=tk.Button(basicDataWindow, text="OK", width=10, height=2, font=("Arial"), command=lambda:eventOkBWButton(jobA, jobB, jobC, queueQuantity, quantumTime, periodTime, jobAComboBox, jobBComboBox, jobCComboBox, jobTwoOptionsComboBox, arrivalJobA, arrivalJobB, arrivalJobC, runTimeJobA, runTimeJobB, runTimeJobC, ioJobC, ioJobB, ioJobA, startIoJobC, startIoJobB, startIoJobA, basicDataWindow, mainWindow))

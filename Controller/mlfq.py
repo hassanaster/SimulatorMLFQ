@@ -51,47 +51,58 @@ class mlfq():
             return 0
         return -1
 
+    #Error handle
     def Abort(self,str):
         sys.stderr.write(str + '\n')
         exit(1)
 
+    #Set num of queues use by simulator
     def setnumQueues(self,numQueues):
         self.__numQueues=numQueues
 
+    #Se llena la lista de quantum dependiendo de las colas que se usan
     def setQuantumList(self):
         for i in range(self.__numQueues):
             self.__quantumList[i] = int(self.__quantum)
 
+    #Se llena la lista de allotment dependiendo de las colas que se usan
     def setAllotmentList(self):
         for i in range(self.__numQueues):
             self.__allotmentList[i] = int(self.__allotment)
     
+    #Set of high priority queue, normally is the queue 2
     def setHiQueue(self):
         self.__hiQueue=self.__numQueues - 1
 
+    #Tiene como parametros la lista de los trabajos para usarla internamente y fijar el numero de trabajos
     def setJobList(self,joblist):
         self.__numJobs=joblist[0].getQuantity()
         for i in range(self.__numJobs):
             self.__joblist[i]=joblist[i]
     
+    #Set the parameter s
     def setBoost(self,s):
         self.__S=s
 
+    #Set the quantum
     def setQuantum(self,quantum):
         self.__quantum=quantum
 
+    #Llena a lista con los tiempos de inicio e cada tranbajo para controlar cuando empiezan
     def setioDone(self):
         for i in range (self.__numJobs):
-            if 0 not in self.__ioDone:
-                self.__ioDone[0]=[]
-            self.__ioDone[0].append((i, 'JOB BEGINS'))
-            
+            if self.__joblist[i].getArrivalTime() not in self.__ioDone:
+                self.__ioDone[self.__joblist[i].getArrivalTime()]=[]
+            self.__ioDone[self.__joblist[i].getArrivalTime()].append((i, 'JOB BEGINS'))
+
+    #Cambio los atributos de cada trabajo para su correcta ejecución      
     def setAllJob(self):
         for i in range(self.__numJobs):
             self.__joblist[i].setTimeLeft(self.__joblist[i].getRunTime())
             self.__joblist[i].setTrickLeft(self.__quantumList[self.__hiQueue])
             self.__joblist[i].setAllotLeft(self.__allotmentList[self.__hiQueue])
     
+    #Organiza correctamente la prioridad de cada trabajo dependiendo del numero de colas
     def setAllPriors(self):
         for i in range(self.__numJobs):
             if self.__joblist[i].getPriority()==3:
@@ -108,6 +119,7 @@ class mlfq():
     def getTurnAroundAvg(self):
         return self.__avgTurnAround
 
+    #Funcion central
     def RunMLFQ(self,joblist,numQueue,boost,quantumm):
 
         # initialize the MLFQ atributtes
@@ -172,6 +184,7 @@ class mlfq():
                     q = self.__joblist[j].getPriority()
                     self.__joblist[j].setDoinIO(False)
                     nosirve=self.__file.write('[ time %d ] %s by JOB %d\n' % (currTime, type, j))
+                    self.__joblist[j].setJobStatus(1)
                     if self.__iobump == False or type == 'JOB BEGINS':
                         queue[q].append(j)
                     else:
@@ -215,6 +228,7 @@ class mlfq():
             # CHECK FOR JOB ENDING
             if timeLeft == 0:
                 nosirve=self.__file.write( '[ time %d ] FINISHED JOB %d\n' % (currTime, currJob))
+                self.__joblist[j].setJobStatus(0)
                 finishedJobs += 1
                 self.__joblist[currJob].setEndTime(currTime)
                 # print 'BEFORE POP', queue
@@ -237,10 +251,10 @@ class mlfq():
                     self.__joblist[currJob].setTrickLeft(self.__quantumList[currQueue])
                     self.__joblist[currJob].setAllotmentLeft(self.__allotmentList[currQueue])
                 # add to IO Queue: but which queue?
-                futureTime = currTime + self.__iotime
+                futureTime = currTime + self.__joblist[currJob].getIoTime()
                 if futureTime not in self.__ioDone:
                     self.__ioDone[futureTime] = []
-                nosirve=self.__file.write('IO DONE\n')
+                #nosirve=self.__file.write('IO DONE\n')
                 self.__ioDone[futureTime].append((currJob, 'IO_DONE'))
 
             # CHECK FOR QUANTUM ENDING AT THIS LEVEL (BUT REMEMBER, THERE STILL MAY BE ALLOTMENT LEFT)

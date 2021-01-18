@@ -19,7 +19,14 @@ import sys
 #----------------------------------------------------------------------------------
 # Functions to create the events for each button
 #----------------------------------------------------------------------------------
-
+def setStatus(job):
+    if int(job.getJobStatus())==0:
+        return "Finish"
+    elif int(job.getJobStatus())==1:
+        return "In Process"
+    else:
+        return "In Pause"
+    
 def drawResultWindow(jobA, jobB, jobC, simulationWindow, mainWindow, timeList, jobList, queueList, avgResponse, avgTurnAround):
     simulationWindow.withdraw()
     resultWindow=tk.Toplevel()
@@ -63,6 +70,7 @@ def drawResultWindow(jobA, jobB, jobC, simulationWindow, mainWindow, timeList, j
     #---We need to add the job status
     statusJobAField=tk.Entry(resultWindow, font=("Arial"), fg="gray", width=10, justify="center", cursor="arrow")
     statusJobAField.grid(row=5, column=1, padx=10, pady=10)
+    statusJobAField.insert(0, setStatus(jobA))
 
     aroundJobAField=tk.Entry(resultWindow, font=("Arial"), fg="gray", width=10, justify="center", cursor="arrow")
     aroundJobAField.grid(row=5, column=2, padx=10, pady=10)
@@ -75,7 +83,7 @@ def drawResultWindow(jobA, jobB, jobC, simulationWindow, mainWindow, timeList, j
     #JOB B
     statusJobBField=tk.Entry(resultWindow, font=("Arial"), fg="gray", width=10, justify="center", cursor="arrow")
     statusJobBField.grid(row=6, column=1, padx=10, pady=10)
-    
+    statusJobBField.insert(0, setStatus(jobB))
 
     aroundJobBField=tk.Entry(resultWindow, font=("Arial"), fg="gray", width=10, justify="center", cursor="arrow")
     aroundJobBField.grid(row=6, column=2, padx=10, pady=10)
@@ -88,6 +96,7 @@ def drawResultWindow(jobA, jobB, jobC, simulationWindow, mainWindow, timeList, j
     #JOB C
     statusJobCField=tk.Entry(resultWindow, font=("Arial"), fg="gray", width=10, justify="center", cursor="arrow")
     statusJobCField.grid(row=7, column=1, padx=10, pady=10)
+    statusJobCField.insert(0, setStatus(jobC))
 
     aroundJobCField=tk.Entry(resultWindow, font=("Arial"), fg="gray", width=10, justify="center", cursor="arrow")
     aroundJobCField.grid(row=7, column=2, padx=10, pady=10)
