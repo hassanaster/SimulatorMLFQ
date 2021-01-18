@@ -228,7 +228,7 @@ class mlfq():
             # CHECK FOR JOB ENDING
             if timeLeft == 0:
                 nosirve=self.__file.write( '[ time %d ] FINISHED JOB %d\n' % (currTime, currJob))
-                self.__joblist[j].setJobStatus(0)
+                self.__joblist[currJob].setJobStatus(0)
                 finishedJobs += 1
                 self.__joblist[currJob].setEndTime(currTime)
                 # print 'BEFORE POP', queue
@@ -316,10 +316,21 @@ class mlfq():
         archivo=open("Controller/ejecucion.txt","r+")
         texto=archivo.read()
         archivo.close()
-        filtro1=re.findall("\d+\s]\sRun\sJOB\s\d\sat\s\w+\s\d",texto)
+        filtro1=re.findall("\d+\s]\sIDLE|\d+\s]\s\w+\s\w+\s\w+\s\d|\d+\s]\s\w+\s\w+\s\d\s\w+\s\w+\s\d",texto)
         numero=[]
-        for i in filtro1:
-            numero.append(re.findall("\d+",i))
+        for i in range(len(filtro1)):   #IDLE = 3, IO =4
+            x=re.search("IDLE", filtro1[i])
+            y=re.search("IO_",filtro1[i])
+            if x:
+                numero.append(re.findall("\d+",filtro1[i]))
+                numero[i].append(3)
+                numero[i].append(self.__hiQueue)
+            elif y:
+                numero.append(re.findall("^\d+",filtro1[i]))
+                numero[i].append(4)
+                numero[i].append(self.__hiQueue)
+            else:
+                numero.append(re.findall("\d+",filtro1[i]))                
         for i in numero:
             tiempo.append(int(i[0]))
             trabajo.append(int(i[1]))

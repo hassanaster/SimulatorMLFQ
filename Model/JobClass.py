@@ -29,7 +29,7 @@ class Job():
         self.__endTime=0
         
         #Result Attributes
-        self.__jobStatus=2
+        self.__jobStatus=3
         self.__turnAround=0.0
         self.__responsiveTime=0.0
     

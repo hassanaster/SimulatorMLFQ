@@ -24,8 +24,10 @@ def setStatus(job):
         return "Finish"
     elif int(job.getJobStatus())==1:
         return "In Process"
-    else:
+    elif int(job.getJobStatus())==2:
         return "In Pause"
+    else:
+        return "N/A"
     
 def drawResultWindow(jobA, jobB, jobC, simulationWindow, mainWindow, timeList, jobList, queueList, avgResponse, avgTurnAround):
     simulationWindow.withdraw()

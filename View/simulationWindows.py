@@ -32,8 +32,12 @@ def drawEmpty(simulationWindow):
             emptyLabelDraw= tk.Label(simulationWindow, bg='#EAF6F5', width=1, height=3)
             emptyLabelDraw.grid(row=x+3, column=y+1)
 
-def drawProcess(timeList, jobList, queueList, simulationWindow):
+def drawProcess(timeList, jobList, queueList, simulationWindow, entrytime):
+    time=0
+    
     for k, data in enumerate(queueList):
+        entrytime.set(time)
+        
         if data==2:
             x=3
         elif data==1:
@@ -44,21 +48,29 @@ def drawProcess(timeList, jobList, queueList, simulationWindow):
         if jobList[k]==0:
             #print("Entre al primer JOB: ", " y: ", y, " x: ", x)
             jobALabel= tk.Label(simulationWindow, bg='#CB8665', width=1, height=2)
-            jobALabel.grid(row=x, column=y+1)
+            jobALabel.grid(row=x, column=y)
         elif jobList[k]==1:
             #print("Entre al segundo JOB: ", " y: ", y, " x: ", x)
             jobBLabel= tk.Label(simulationWindow, bg='#FDBCB4', width=1, height=2)
-            jobBLabel.grid(row=x, column=y+1)
-        else:
+            jobBLabel.grid(row=x, column=y)
+        elif jobList[k]==2:
             #print("Entre al tercer JOB: ", " y: ", y, " x: ", x)
             jobCLabel= tk.Label(simulationWindow, bg='#E6D690', width=1, height=2)
-            jobCLabel.grid(row=x, column=y+1)
-        if k==99:
-            break
-        if len(timeList)<100:
-            for y in range(len(timeList),100-len(timeList)):
-                emptyLabelDraw= tk.Label(simulationWindow, bg='#EAF6F5', width=1, height=3)
-                emptyLabelDraw.grid(row=x, column=y+1)
+            jobCLabel.grid(row=x, column=y)
+        elif jobList[k]==4:
+            ioLabel= tk.Label(simulationWindow, bg="gray", width=1, height=2)
+            ioLabel.grid(row=x, column=y, pady=2)
+        else:
+            emptyLabel= tk.Label(simulationWindow, bg='#EAF6F5', width=1, height=3)
+            emptyLabel.grid(row=x, column=y)
+        time+=1
+        if data==99:
+            break    
+    if len(timeList)<100:
+        for y in range(len(timeList),100-len(timeList)):
+            emptyLabelDraw= tk.Label(simulationWindow, bg='#EAF6F5', width=1, height=3)
+            emptyLabelDraw.grid(row=x, column=y)
+        
     #How to manage I/O process
 
 #Function for Pause the simulation
@@ -66,7 +78,7 @@ def eventPauseButton():
     mb.showinfo(title="Pause Button", message="Estoy en el boton de pausa")
         
 #Function for Start the simulation after pause, or since the begining
-def eventStartButtonSW(jobA, jobB, jobC, queueQuantity, quantum, period, simulationWindow):
+def eventStartButtonSW(jobA, jobB, jobC, queueQuantity, quantum, period, simulationWindow, entrytime):
     global avgTurnAroundTime
     global avgResponse
 
@@ -81,7 +93,7 @@ def eventStartButtonSW(jobA, jobB, jobC, queueQuantity, quantum, period, simulat
     joblist.append(jobA)
     joblist.append(jobB)
     joblist.append(jobC)
-    print(joblist[0].getQuantity(), sep=",")
+    #print(joblist[0].getQuantity(), sep=",")
     
     #print("Cantidad de colas: ", queueQuantity, "Periodo S: ", period, "Quantum: ", quantum, sep=',')
     
@@ -95,11 +107,11 @@ def eventStartButtonSW(jobA, jobB, jobC, queueQuantity, quantum, period, simulat
     avgTurnAroundTime=scheduler.getTurnAroundAvg()
     avgResponse=scheduler.getResponseTimeAvg()
 
-    #print(timeList[:])
-    #print(jobList[:])
-    #print(queueList[:])
+    print(timeList[:])
+    print(jobList[:])
+    print(queueList[:])
     #Draw processess
-    drawProcess(timeList, jobList, queueList, simulationWindow)
+    drawProcess(timeList, jobList, queueList, simulationWindow, entrytime)
     
 
     #---After results we have to call the function wich draw the simulation with the pause, and finish button 
@@ -107,8 +119,8 @@ def eventStartButtonSW(jobA, jobB, jobC, queueQuantity, quantum, period, simulat
 
 
 #Function to finish the simulation and display the final graphic
-def eventFinishButton():
-    mb.showinfo(title="Finish Button", message="Estoy en el boton de finish")
+def eventFinishButton(button):
+    button['state']=tk.NORMAL
 
 #Function for Result button, to display window result
 def eventResultButton(jobA, jobB, jobC, simulationWindow, mainWindow):
@@ -125,6 +137,7 @@ def drawSimulationWindow(jobA, jobB, jobC, queueQuantity, quantum, period, aditi
     simulationWindow.config(bg='#EAF6F5')
     simulationWindow.geometry('1550x650+30+150')
 
+    entrytime=tk.StringVar()
     #Create the widgets and add them in a grid to add all the widgets needed in the right places
     #Labels
     tk.Label(simulationWindow,text="Simulation MLFQ", font=("Arial", 18), bg='#EAF6F5').grid(row=0, column=0, sticky="W", columnspan=100, pady=10)
@@ -172,21 +185,21 @@ def drawSimulationWindow(jobA, jobB, jobC, queueQuantity, quantum, period, aditi
     tk.Label(simulationWindow, text="I/O", font=("Arial", 12), bg='#EAF6F5', fg="gray").grid(row=9, column=64, pady=2, columnspan=9, sticky="W")
 
     #Field - Entry
-    resultCounter=tk.Entry(simulationWindow,text="Results", font=("Arial", 12), bg='#EAF6F5', fg="gray", justify="right", width=6, state="disabled")
+    resultCounter=tk.Entry(simulationWindow,text="Results", textvariable=entrytime ,font=("Arial", 12), bg='#EAF6F5', fg="gray", justify="right", width=6)
     resultCounter.grid(row=1, column=96, pady=10, sticky="E", columnspan=5)
 
     #Buttons
     pauseButton=tk.Button(simulationWindow, text="PAUSE", width=10, height=2, font=("Arial"), command=lambda:eventPauseButton())
     pauseButton.grid(row=11, column=35, pady=20, columnspan=10)
 
-    startButtonSW=tk.Button(simulationWindow, text="START", width=10, height=2, font=("Arial"), command=lambda:eventStartButtonSW(jobA, jobB, jobC, queueQuantity, quantum, period, simulationWindow))
+    startButtonSW=tk.Button(simulationWindow, text="START", width=10, height=2, font=("Arial"), command=lambda:eventStartButtonSW(jobA, jobB, jobC, queueQuantity, quantum, period, simulationWindow, entrytime))
     startButtonSW.grid(row=11, column=46, pady=20, columnspan=10)
 
-    finishButton=tk.Button(simulationWindow, text="FINISH", width=10, height=2, font=("Arial"), command=lambda:eventFinishButton())
-    finishButton.grid(row=11, column=56, pady=20, columnspan=10)
-
-    resultButton=tk.Button(simulationWindow, text="RESULT", width=10, height=2, font=("Arial"), command=lambda:eventResultButton(jobA, jobB, jobC, simulationWindow, mainWindow))
+    resultButton=tk.Button(simulationWindow, text="RESULT", width=10, height=2, font=("Arial"), state="disable", command=lambda:eventResultButton(jobA, jobB, jobC, simulationWindow, mainWindow))
     resultButton.grid(row=12, column=40, pady=20, columnspan=10)
+
+    finishButton=tk.Button(simulationWindow, text="FINISH", width=10, height=2, font=("Arial"), command=lambda:eventFinishButton(resultButton))
+    finishButton.grid(row=11, column=56, pady=20, columnspan=10)
 
     closeButtonSW=tk.Button(simulationWindow, text="CLOSE", width=10, height=2, font=("Arial"), command=lambda:sgf.eventCloseButton(mainWindow))
     closeButtonSW.grid(row=12, column=51, pady=20, columnspan=10)
