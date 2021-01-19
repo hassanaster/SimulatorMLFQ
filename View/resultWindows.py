@@ -57,7 +57,7 @@ def drawResultWindow(jobA, jobB, jobC, simulationWindow, mainWindow, timeList, j
     textResults=tk.Text(resultWindow, font=("Arial", 14), fg="gray", width=75, height=16, bg='#EAF6F5', cursor="arrow", highlightcolor='#EAF6F5')
     textResults.grid(row=2, column=0, pady=10, padx=10, columnspan=4)
     
-    file=open("../Simulator MFLQ/Controller/ejecucion.txt","r")
+    file=open("../SimulatorMLFQ/Controller/ejecucion.txt","r")
     textResults.insert("insert", file.read())
     file.close()
     

@@ -10,7 +10,6 @@
 #----------------------------------------------------------------------------------
 from Model.JobClass import *
 import sys
-from optparse import OptionParser
 import re
 
 class mlfq():
@@ -189,6 +188,7 @@ class mlfq():
                         queue[q].append(j)
                     else:
                         queue[q].insert(0, j)
+                        
 
             # now find the highest priority job
             currQueue = self.findQueue(queue)
@@ -256,6 +256,11 @@ class mlfq():
                     self.__ioDone[futureTime] = []
                 #nosirve=self.__file.write('IO DONE\n')
                 self.__ioDone[futureTime].append((currJob, 'IO_DONE'))
+                while True:
+                    currTime+=1
+                    if currTime==futureTime:
+                        break
+                    nosirve=self.__file.write('[ time %d ] IO_RUN by JOB %d\n' % (currTime,currJob))
 
             # CHECK FOR QUANTUM ENDING AT THIS LEVEL (BUT REMEMBER, THERE STILL MAY BE ALLOTMENT LEFT)
             if ticksLeft == 0:
@@ -316,7 +321,7 @@ class mlfq():
         archivo=open("Controller/ejecucion.txt","r+")
         texto=archivo.read()
         archivo.close()
-        filtro1=re.findall("\d+\s]\sIDLE|\d+\s]\s\w+\s\w+\s\w+\s\d|\d+\s]\s\w+\s\w+\s\d\s\w+\s\w+\s\d",texto)
+        filtro1=re.findall("\d+\s]\sIDLE|\d+\s]\sIO_RUN\s\w+\s\w+\s\d|\d+\s]\sIO_START\s\w+\s\w+\s\d|\d+\s]\s\w+\s\w+\s\d\s\w+\s\w+\s\d",texto)
         numero=[]
         for i in range(len(filtro1)):   #IDLE = 3, IO =4
             x=re.search("IDLE", filtro1[i])

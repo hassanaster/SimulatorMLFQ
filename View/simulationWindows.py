@@ -64,7 +64,7 @@ def drawProcess(timeList, jobList, queueList, simulationWindow, entrytime):
             emptyLabel= tk.Label(simulationWindow, bg='#EAF6F5', width=1, height=3)
             emptyLabel.grid(row=x, column=y)
         time+=1
-        if data==99:
+        if time==101:
             break    
     if len(timeList)<100:
         for y in range(len(timeList),100-len(timeList)):
@@ -119,8 +119,8 @@ def eventStartButtonSW(jobA, jobB, jobC, queueQuantity, quantum, period, simulat
 
 
 #Function to finish the simulation and display the final graphic
-def eventFinishButton(button):
-    button['state']=tk.NORMAL
+def eventFinishButton():
+    mb.showinfo(title="Finish Button", message="Estoy en el boton para finalizar")
 
 #Function for Result button, to display window result
 def eventResultButton(jobA, jobB, jobC, simulationWindow, mainWindow):
@@ -189,16 +189,16 @@ def drawSimulationWindow(jobA, jobB, jobC, queueQuantity, quantum, period, aditi
     resultCounter.grid(row=1, column=96, pady=10, sticky="E", columnspan=5)
 
     #Buttons
-    pauseButton=tk.Button(simulationWindow, text="PAUSE", width=10, height=2, font=("Arial"), command=lambda:eventPauseButton())
+    pauseButton=tk.Button(simulationWindow, text="PAUSE", width=10, height=2, font=("Arial"), state="disable", command=lambda:eventPauseButton())
     pauseButton.grid(row=11, column=35, pady=20, columnspan=10)
 
     startButtonSW=tk.Button(simulationWindow, text="START", width=10, height=2, font=("Arial"), command=lambda:eventStartButtonSW(jobA, jobB, jobC, queueQuantity, quantum, period, simulationWindow, entrytime))
     startButtonSW.grid(row=11, column=46, pady=20, columnspan=10)
 
-    resultButton=tk.Button(simulationWindow, text="RESULT", width=10, height=2, font=("Arial"), state="disable", command=lambda:eventResultButton(jobA, jobB, jobC, simulationWindow, mainWindow))
+    resultButton=tk.Button(simulationWindow, text="RESULT", width=10, height=2, font=("Arial"), command=lambda:eventResultButton(jobA, jobB, jobC, simulationWindow, mainWindow))
     resultButton.grid(row=12, column=40, pady=20, columnspan=10)
 
-    finishButton=tk.Button(simulationWindow, text="FINISH", width=10, height=2, font=("Arial"), command=lambda:eventFinishButton(resultButton))
+    finishButton=tk.Button(simulationWindow, text="FINISH", width=10, height=2, font=("Arial"), state="disable", command=lambda:eventFinishButton())
     finishButton.grid(row=11, column=56, pady=20, columnspan=10)
 
     closeButtonSW=tk.Button(simulationWindow, text="CLOSE", width=10, height=2, font=("Arial"), command=lambda:sgf.eventCloseButton(mainWindow))
